@@ -1,3 +1,9 @@
+interface Listener<T> {
+    addListener: (callback: (arg: T) => void) => void;
+    removeListener: (listener: Listener<T>) => void;
+    hasListener: (listener: Listener<T>) => boolean;
+}
+
 declare namespace browser.runtime {
     let lastError: string | null;
     const id: string;
@@ -72,6 +78,33 @@ declare namespace browser.runtime {
     }>;
     // Unsupported: https://bugzilla.mozilla.org/show_bug.cgi?id=1339407
     // function getPackageDirectoryEntry(): Promise<any>;
+
+    type onStartup = Listener<void>;
+    type onInstalled = Listener<{
+        reason: OnInstalledReason,
+        previousVersion?: string,
+        id?: string,
+    }>;
+    // Unsupported
+    // type onSuspend = Listener<void>;
+    // type onSuspendCanceled = Listener<void>;
+    // type onBrowserUpdateAvailable = Listener<void>;
+    // type onConnectExternal = Listener<Port>;
+    // type onMessageExternal = Listener<any>;
+    // type onRestartRequired = Listener<OnRestartRequiredReason>;
+    type onUpdateAvailable = Listener<{ version: string }>;
+    type onConnect = Listener<Port>;
+    interface onMessage = {
+        addListener: (
+            callback: (
+                message: object,
+                sender: MessageSender,
+                sendResponse: (response: object) => boolean | Promise<void>
+            ) => boolean | Promise<void>
+        ) => void;
+        removeListener: (listener: onMessage) => void;
+        hasListener: (listener: onMessage) => boolean;
+    };
 }
 
 declare namespace browser.tabs {
