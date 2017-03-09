@@ -110,7 +110,7 @@ declare namespace browser.runtime {
     // type onRestartRequired = Listener<OnRestartRequiredReason>;
     type onUpdateAvailable = Listener<{ version: string }>;
     type onConnect = Listener<Port>;
-    interface onMessage = {
+    interface onMessage {
         addListener: (
             callback: (
                 message: object,
@@ -120,7 +120,7 @@ declare namespace browser.runtime {
         ) => void;
         removeListener: (listener: onMessage) => void;
         hasListener: (listener: onMessage) => boolean;
-    };
+    }
 }
 
 declare namespace browser.tabs {
