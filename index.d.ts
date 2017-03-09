@@ -5,7 +5,7 @@ interface Listener<T> {
 }
 
 declare namespace browser.runtime {
-    let lastError: string | null;
+    const lastError: string | null;
     const id: string;
 
     type Port = {
@@ -41,7 +41,7 @@ declare namespace browser.runtime {
         arch: PlatformArch,
     };
 
-    type RequestUpdateCheckStatus = "throttled" | "no_update" | "update_available";
+    // type RequestUpdateCheckStatus = "throttled" | "no_update" | "update_available";
     type OnInstalledReason = "install" | "update" | "chrome_update" | "shared_module_update";
     type OnRestartRequiredReason = "app_update" | "os_update" | "periodic";
 
@@ -65,7 +65,7 @@ declare namespace browser.runtime {
         message: any,
         options?: { includeTlsChannelId?: boolean }
     ): Promise<any>;
-    function sendMessageNative(
+    function sendNativeMessage(
         application: string,
         message: object
     ): Promise<object|void>;
