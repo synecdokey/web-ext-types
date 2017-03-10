@@ -9,6 +9,9 @@
     "noUnusedParameters": true,
     "strictNullChecks": true
   },
+  "files": [
+      "global/index.d.ts"
+  ],
   "exclude": [
     "node_modules"
   ]
