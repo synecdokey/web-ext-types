@@ -14,6 +14,7 @@ What is implemented:
 - `extensionTypes`
 - `identity`
 - `idle`
+- `management`
 - `omnibox`
 - `runtime`
 - `tabs`

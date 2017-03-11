@@ -143,6 +143,32 @@ declare namespace browser.idle {
     const onStateChanged: Listener<IdleState>;
 }
 
+declare namespace browser.management {
+    type ExtensionInfo = {
+        description: string,
+        // unsupported: disabledReason: string,
+        enabled: boolean,
+        homepageUrl: string,
+        hostPermissions: string[],
+        icons: { size: number, url: string }[],
+        id: string,
+        installType: "admin" | "development" | "normal" | "sideload" | "other";
+        mayDisable: boolean,
+        name: string,
+        // unsupported: offlineEnabled: boolean,
+        optionsUrl: string,
+        permissions: string[],
+        shortName: string,
+        // unsupported: type: string,
+        updateUrl: string,
+        version: string,
+        // unsupported: versionName: string,
+    };
+
+    function getSelf(): Promise<ExtensionInfo>;
+    function uninstallSelf(options: { showConfirmDialog: boolean, dialogMessage: string }): Promise<void>;
+}
+
 declare namespace browser.omnibox {
     type OnInputEnteredDisposition = "currentTab" | "newForegroundTab" | "newBackgroundTab";
     type SuggestResult = {
