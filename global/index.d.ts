@@ -22,6 +22,31 @@ interface EvListener<T extends Function> {
 
 type Listener<T> = EvListener<(arg: T) => void>;
 
+declare namespace browser.events {
+    type UrlFilter = {
+        hostContainsOptional?: string,
+        hostEqualsOptional?: string,
+        hostPrefixOptional?: string,
+        hostSuffixOptional?: string,
+        pathContainsOptional?: string,
+        pathEqualsOptional?: string,
+        pathPrefixOptional?: string,
+        pathSuffixOptional?: string,
+        queryContainsOptional?: string,
+        queryEqualsOptional?: string,
+        queryPrefixOptional?: string,
+        querySuffixOptional?: string,
+        urlContainsOptional?: string,
+        urlEqualsOptional?: string,
+        urlMatchesOptional?: string,
+        originAndPathMatchesOptional?: string,
+        urlPrefixOptional?: string,
+        urlSuffixOptional?: string,
+        schemesOptional?: string[],
+        ports?: Array<number|number[]>,
+    };
+}
+
 declare namespace browser.omnibox {
     type OnInputEnteredDisposition = "currentTab" | "newForegroundTab" | "newBackgroundTab";
     type SuggestResult = {
