@@ -14,6 +14,7 @@ What is implemented:
 - `extensionTypes`
 - `omnibox`
 - `runtime`
+- `tabs`
 
 ## Requirements
 

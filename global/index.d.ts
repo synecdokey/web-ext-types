@@ -254,8 +254,149 @@ declare namespace browser.runtime {
 }
 
 declare namespace browser.tabs {
+    type MutedInfoReason = "capture" | "extension" | "user";
+    type MutedInfo = {
+        muted: boolean,
+        extensionId?: string,
+        reason: MutedInfoReason,
+    };
     type Tab = {
         active: boolean,
+        highlighted: boolean,
         audible?: boolean,
+        cookieStoreId?: string,
+        favIconUrl?: string,
+        height?: number,
+        id?: number,
+        incognito: boolean,
+        index: number,
+        mutedInfo?: MutedInfo,
+        // not supported: openerTabId?: number,
+        pinned: boolean,
+        selected: boolean,
+        sessionId?: string,
+        status?: string,
+        title?: string,
+        url?: string,
+        width?: number,
+        windowId: number,
     };
+
+    type TabStatus = "loading" | "complete";
+    type WindowType = "normal" | "popup" | "panel" | "devtools";
+    type ZoomSettingsMode = "automatic" | "disabled" | "manual";
+    type ZoomSettingsScope = "per-origin" | "per-tab";
+    type ZoomSettings = {
+        defaultZoomFactor?: number,
+        mode?: ZoomSettingsMode,
+        scope?: ZoomSettingsScope,
+    };
+
+    const TAB_ID_NONE: number;
+
+    function connect(tabId: number, connectInfo?: { name?: string, frameId?: number }): browser.runtime.Port;
+    function create(createProperties: {
+        active?: boolean,
+        cookieStoreId?: string,
+        index?: number,
+        // unsupported: openerTabId: number,
+        pinned?: boolean,
+        // deprecated: selected: boolean,
+        url?: string,
+        windowId?: number,
+    }): Promise<Tab>;
+    function captureVisibleTab(
+        windowId?: number,
+        options?: browser.extensionTypes.ImageDetails
+    ): Promise<string>;
+    function detectLanguage(tabId?: number): Promise<string>;
+    function duplicate(tabId: number): Promise<Tab>;
+    function executeScript(
+        tabId: number|undefined,
+        details: browser.extensionTypes.InjectDetails
+    ): Promise<object[]>;
+    function get(tabId: number): Promise<Tab>;
+    // deprecated: function getAllInWindow(): x;
+    function getCurrent(): Promise<Tab>;
+    // deprecated: function getSelected(windowId?: number): Promise<browser.tabs.Tab>;
+    function getZoom(tabId?: number): Promise<number>;
+    function getZoomSettings(tabId?: number): Promise<ZoomSettings>;
+    // unsupported: function highlight(highlightInfo: {
+    //     windowId?: number,
+    //     tabs: number[]|number,
+    // }): Promise<browser.windows.Window>;
+    function insertCSS(tabId: number|undefined, details: browser.extensionTypes.InjectDetails): Promise<void>;
+    function removeCSS(tabId: number|undefined, details: browser.extensionTypes.InjectDetails): Promise<void>;
+    function move(tabIds: number|number[], moveProperties: {
+        windowId?: number,
+        index: number,
+    }): Promise<Tab|Tab[]>;
+    function query(queryInfo: {
+        active?: boolean,
+        audible?: boolean,
+        cookieStoreId?: string,
+        currentWindow?: boolean,
+        highlighted?: boolean,
+        index?: number,
+        muted?: boolean,
+        lastFocusedWindow?: boolean,
+        pinned?: boolean,
+        status?: TabStatus,
+        title?: string,
+        url?: string|string[],
+        windowId?: number,
+        windowType?: WindowType,
+    }): Promise<Tab[]>;
+    function reload(tabId: number, reloadProperties: { bypassCache: boolean }): Promise<void>;
+    function remove(tabIds: Tab|Tab[]): Promise<void>;
+    function sendMessage(tabId: number, message: any, options?: { frameId?: number }): Promise<object|void>;
+    // deprecated: function sendRequest(): x;
+    function setZoom(tabId: number|undefined, zoomFactor: number): Promise<void>;
+    function setZoomSettings(tabId: number|undefined, zoomSettings: ZoomSettings): Promise<void>;
+    function update(tabId: number|undefined, updateProperties: {
+        active?: boolean,
+        // unsupported: highlighted?: boolean,
+        muted?: boolean,
+        openerTabId?: number,
+        pinned?: boolean,
+        // deprecated: selected?: boolean,
+        url?: string,
+    }): Promise<Tab>;
+
+    const onActivated: Listener<{ tabId: number, windowId: number }>;
+    const onAttached: EvListener<(tabId: number, attachInfo: {
+        newWindowId: number,
+        newPosition: number,
+    }) => void>;
+    const onCreated: Listener<Tab>;
+    const onDetached: EvListener<(tabId: number, detachInfo: {
+        oldWindowId: number,
+        oldPosition: number,
+    }) => void>;
+    const onHighlighted: Listener<{ windowId: number, tabIds: number[] }>;
+    const onMoved: EvListener<(tabId: number, moveInfo: {
+        windowId: number,
+        fromIndex: number,
+        toIndex: number,
+    }) => void>;
+    const onRemoved: EvListener<(tabId: number, removeInfo: {
+        windowId: number,
+        isWindowClosing: boolean,
+    }) => void>;
+    const onReplaced: EvListener<(addedTabId: number, removedTabId: number) => void>;
+    const onUpdated: EvListener<(tabId: number, updateInfo: {
+        status?: string,
+        url?: string,
+        pinned?: boolean,
+        audible?: boolean,
+        mutedInfo?: MutedInfo,
+        favIconUrl?: string,
+        title?: string,
+    }, tab: Tab) => void>;
+    const onZoomChanged: Listener<{
+        tabId: number,
+        oldZoomFactor: number,
+        newZoomFactor: number,
+        zoomSettings: ZoomSettings,
+    }>;
 }
