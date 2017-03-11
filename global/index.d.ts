@@ -22,6 +22,18 @@ interface EvListener<T extends Function> {
 
 type Listener<T> = EvListener<(arg: T) => void>;
 
+declare namespace browser.commands {
+    type Command = {
+        name?: string,
+        description?: string,
+        shortcut?: string,
+    };
+
+    function getAll(): Promise<Command[]>;
+
+    const onCommand: Listener<string>;
+}
+
 declare namespace browser.events {
     type UrlFilter = {
         hostContainsOptional?: string,
