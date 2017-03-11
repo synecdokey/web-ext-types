@@ -14,11 +14,13 @@
 //    You should have received a copy of the GNU General Public License
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-interface Listener<T> {
-    addListener: (callback: (arg: T) => void) => void;
-    removeListener: (listener: (arg: T) => void) => void;
-    hasListener: (listener: (arg: T) => void) => boolean;
+interface EvListener<T extends Function> {
+    addListener: (callback: T) => void;
+    removeListener: (listener: T) => void;
+    hasListener: (listener: T) => boolean;
 }
+
+type Listener<T> = EvListener<(arg: T) => void>;
 
 declare namespace browser.runtime {
     const lastError: string | null;
@@ -110,18 +112,21 @@ declare namespace browser.runtime {
     // const onRestartRequired: Listener<OnRestartRequiredReason>;
     const onUpdateAvailable: Listener<{ version: string }>;
     const onConnect: Listener<Port>;
-    interface onMessageEvent{
-        addListener: (
-            callback: (
-                message: object,
-                sender: MessageSender,
-                sendResponse: (response: object) => boolean | Promise<void>
-            ) => boolean | Promise<void>,
-        ) => void;
-        removeListener: (listener: onMessage) => void;
-        hasListener: (listener: onMessage) => boolean;
-    }
-    const onMessage: onMessageEvent;
+
+    type onMessagePromise = (
+        message: object,
+        sender: MessageSender,
+        sendResponse: (response: object) => boolean
+    ) => Promise<void>;
+
+    type onMessageBool = (
+        message: object,
+        sender: MessageSender,
+        sendResponse: (response: object) => Promise<void>
+    ) => boolean;
+
+    type onMessageEvent = onMessagePromise | onMessageBool;
+    const onMessage: EvListener<onMessageEvent>;
 }
 
 declare namespace browser.tabs {
