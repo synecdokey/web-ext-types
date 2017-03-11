@@ -7,6 +7,8 @@ TypeScript type definitions for WebExtensions
 :warning: This is in a WIP state. :warning:
 
 What is implemented:
+- `alarms`
+- `browserAction`
 - `commands`
 - `events`
 - `omnibox`

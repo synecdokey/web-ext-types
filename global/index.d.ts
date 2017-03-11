@@ -22,6 +22,59 @@ interface EvListener<T extends Function> {
 
 type Listener<T> = EvListener<(arg: T) => void>;
 
+declare namespace browser.alarms {
+    type Alarm = {
+        name: string,
+        scheduledTime: number,
+        periodInMinutes?: number,
+    };
+
+    type When = {
+        when?: number,
+        periodInMinutes?: number,
+    };
+    type DelayInMinutes = {
+        delayInMinutes?: number,
+        periodInMinutes?: number,
+    };
+    function create(name?: string, alarmInfo?: When | DelayInMinutes): void;
+    function get(name?: string): Promise<Alarm|undefined>;
+    function getAll(): Promise<Alarm[]>;
+    function clear(name?: string): Promise<boolean>;
+    function clearAll(): Promise<boolean>;
+
+    const onAlarm: Listener<Alarm>;
+}
+
+declare namespace browser.browserAction {
+    type ColorArray = [number, number, number, number];
+    type ImageDataType = ImageData;
+
+    function setTitle(details: { title: string, tabId?: number }): void;
+    function getTitle(details: { tabId?: number }): Promise<string>;
+
+    type IconViaPath = {
+        path: string | object,
+        tabId?: number,
+    };
+
+    type IconViaImageData = {
+        imageData: ImageDataType,
+        tabId?: number,
+    };
+    function setIcon(details: IconViaPath | IconViaImageData): Promise<void>;
+    function setPopup(details: { popup: string, tabId?: number }): void;
+    function getPopup(details: { tabId?: number }): Promise<string>;
+    function setBadgeText(details: { text: string, tabId?: number }): void;
+    function getBadgeText(details: { tabId?: number }): Promise<string>;
+    function setBadgeBackgroundColor(details: { color: string|ColorArray, tabId?: number }): void;
+    function getBadgeBackgroundColor(details: { tabId?: number }): Promise<ColorArray>;
+    function enable(tabId?: number): void;
+    function disable(tabId?: number): void;
+
+    const onClicked: Listener<browser.tabs.Tab>;
+}
+
 declare namespace browser.commands {
     type Command = {
         name?: string,
