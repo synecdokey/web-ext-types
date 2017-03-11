@@ -22,6 +22,30 @@ interface EvListener<T extends Function> {
 
 type Listener<T> = EvListener<(arg: T) => void>;
 
+declare namespace browser.alarms {
+    type Alarm = {
+        name: string,
+        scheduledTime: number,
+        periodInMinutes?: number,
+    };
+
+    type When = {
+        when?: number,
+        periodInMinutes?: number,
+    };
+    type DelayInMinutes = {
+        delayInMinutes?: number,
+        periodInMinutes?: number,
+    };
+    function create(name?: string, alarmInfo?: When | DelayInMinutes): void;
+    function get(name?: string): Promise<Alarm|undefined>;
+    function getAll(): Promise<Alarm[]>;
+    function clear(name?: string): Promise<boolean>;
+    function clearAll(): Promise<boolean>;
+
+    const onAlarm: Listener<Alarm>;
+}
+
 declare namespace browser.browserAction {
     type ColorArray = [number, number, number, number];
     type ImageDataType = ImageData;
