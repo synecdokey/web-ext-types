@@ -22,6 +22,23 @@ interface EvListener<T extends Function> {
 
 type Listener<T> = EvListener<(arg: T) => void>;
 
+declare namespace browser.omnibox {
+    type OnInputEnteredDisposition = "currentTab" | "newForegroundTab" | "newBackgroundTab";
+    type SuggestResult = {
+        content: string,
+        description: string,
+    };
+
+    function setDefaultSuggestion(suggestion: { description: string }): void;
+
+    const onInputStarted: Listener<void>;
+    const onInputChanged:
+        EvListener<(text: string, suggest: (arg: SuggestResult[]) => void) => void>;
+    const onInputEntered:
+        EvListener<(text: string, disposition: OnInputEnteredDisposition) => void>;
+    const onInputCancelled: Listener<void>;
+}
+
 declare namespace browser.runtime {
     const lastError: string | null;
     const id: string;
