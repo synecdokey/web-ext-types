@@ -12,6 +12,7 @@ What is implemented:
 - `commands`
 - `events`
 - `extensionTypes`
+- `identity`
 - `omnibox`
 - `runtime`
 - `tabs`

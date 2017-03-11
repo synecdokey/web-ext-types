@@ -129,6 +129,11 @@ declare namespace browser.extensionTypes {
     };
 }
 
+declare namespace browser.identity {
+    function getRedirectURL(): string;
+    function launchWebAuthFlow(details: { url: string, interactive: boolean }): Promise<string>;
+}
+
 declare namespace browser.omnibox {
     type OnInputEnteredDisposition = "currentTab" | "newForegroundTab" | "newBackgroundTab";
     type SuggestResult = {
