@@ -14,11 +14,13 @@
 //    You should have received a copy of the GNU General Public License
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-interface Listener<T> {
-    addListener: (callback: (arg: T) => void) => void;
-    removeListener: (listener: Listener<T>) => void;
-    hasListener: (listener: Listener<T>) => boolean;
+interface EvListener<T extends Function> {
+    addListener: (callback: T) => void;
+    removeListener: (listener: T) => void;
+    hasListener: (listener: T) => boolean;
 }
+
+type Listener<T> = EvListener<(arg: T) => void>;
 
 declare namespace browser.runtime {
     const lastError: string | null;
@@ -95,32 +97,36 @@ declare namespace browser.runtime {
     // Unsupported: https://bugzilla.mozilla.org/show_bug.cgi?id=1339407
     // function getPackageDirectoryEntry(): Promise<any>;
 
-    type onStartup = Listener<void>;
-    type onInstalled = Listener<{
+    const onStartup: Listener<void>;
+    const onInstalled: Listener<{
         reason: OnInstalledReason,
         previousVersion?: string,
         id?: string,
     }>;
     // Unsupported
-    // type onSuspend = Listener<void>;
-    // type onSuspendCanceled = Listener<void>;
-    // type onBrowserUpdateAvailable = Listener<void>;
-    // type onConnectExternal = Listener<Port>;
-    // type onMessageExternal = Listener<any>;
-    // type onRestartRequired = Listener<OnRestartRequiredReason>;
-    type onUpdateAvailable = Listener<{ version: string }>;
-    type onConnect = Listener<Port>;
-    interface onMessage {
-        addListener: (
-            callback: (
-                message: object,
-                sender: MessageSender,
-                sendResponse: (response: object) => boolean | Promise<void>
-            ) => boolean | Promise<void>
-        ) => void;
-        removeListener: (listener: onMessage) => void;
-        hasListener: (listener: onMessage) => boolean;
-    }
+    // const onSuspend: Listener<void>;
+    // const onSuspendCanceled: Listener<void>;
+    // const onBrowserUpdateAvailable: Listener<void>;
+    // const onConnectExternal: Listener<Port>;
+    // const onMessageExternal: Listener<any>;
+    // const onRestartRequired: Listener<OnRestartRequiredReason>;
+    const onUpdateAvailable: Listener<{ version: string }>;
+    const onConnect: Listener<Port>;
+
+    type onMessagePromise = (
+        message: object,
+        sender: MessageSender,
+        sendResponse: (response: object) => boolean
+    ) => Promise<void>;
+
+    type onMessageBool = (
+        message: object,
+        sender: MessageSender,
+        sendResponse: (response: object) => Promise<void>
+    ) => boolean;
+
+    type onMessageEvent = onMessagePromise | onMessageBool;
+    const onMessage: EvListener<onMessageEvent>;
 }
 
 declare namespace browser.tabs {
