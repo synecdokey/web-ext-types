@@ -134,6 +134,15 @@ declare namespace browser.identity {
     function launchWebAuthFlow(details: { url: string, interactive: boolean }): Promise<string>;
 }
 
+declare namespace browser.idle {
+    type IdleState = "active" | "idle" /* unsupported: | "locked" */;
+
+    function queryState(detectionIntervalInSeconds: number): Promise<IdleState>;
+    function setDetectionInterval(intervalInSeconds: number): void;
+
+    const onStateChanged: Listener<IdleState>;
+}
+
 declare namespace browser.omnibox {
     type OnInputEnteredDisposition = "currentTab" | "newForegroundTab" | "newBackgroundTab";
     type SuggestResult = {

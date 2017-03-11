@@ -13,6 +13,7 @@ What is implemented:
 - `events`
 - `extensionTypes`
 - `identity`
+- `idle`
 - `omnibox`
 - `runtime`
 - `tabs`
