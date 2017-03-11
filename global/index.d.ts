@@ -112,6 +112,23 @@ declare namespace browser.events {
     };
 }
 
+declare namespace browser.extensionTypes {
+    type ImageFormat = "jpeg" | "png";
+    type ImageDetails = {
+        format: ImageFormat,
+        quality: number,
+    };
+    type RunAt = "document_start" | "document_end" | "document_idle";
+    type InjectDetails = {
+        allFrames?: boolean,
+        code?: string,
+        file?: string,
+        frameId: number,
+        // unsupported: matchAboutBlank: boolean,
+        runAt: RunAt,
+    };
+}
+
 declare namespace browser.omnibox {
     type OnInputEnteredDisposition = "currentTab" | "newForegroundTab" | "newBackgroundTab";
     type SuggestResult = {

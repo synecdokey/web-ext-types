@@ -11,6 +11,7 @@ What is implemented:
 - `browserAction`
 - `commands`
 - `events`
+- `extensionTypes`
 - `omnibox`
 - `runtime`
 
