@@ -46,6 +46,69 @@ declare namespace browser.alarms {
     const onAlarm: Listener<Alarm>;
 }
 
+declare namespace browser.bookmarks {
+    type BookmarkTreeNodeUnmodifiable = "managed";
+    type BookmarkTreeNode = {
+        id: string,
+        parentId?: string,
+        index?: number,
+        url?: string,
+        title: string,
+        dateAdded?: number,
+        dateGroupModified?: number,
+        unmodifiable?: BookmarkTreeNodeUnmodifiable,
+        children?: BookmarkTreeNode[],
+    };
+
+    type CreateDetails = {
+        parentId?: string,
+        index?: number,
+        title?: string,
+        url?: string,
+    };
+
+    function create(bookmark: CreateDetails): Promise<BookmarkTreeNode>;
+    function get(idOrIdList: string|string[]): Promise<BookmarkTreeNode[]>;
+    function getChildren(id: string): Promise<BookmarkTreeNode[]>;
+    function getRecent(numberOfItems: number): Promise<BookmarkTreeNode[]>;
+    function getSubTree(id: string): Promise<[BookmarkTreeNode]>;
+    function getTree(id: string): Promise<[BookmarkTreeNode]>;
+
+    type Destination = {
+        parentId: string,
+        index?: number,
+    } | {
+        index: number,
+        parentId?: string,
+    };
+    function move(id: string, destination: Destination): Promise<BookmarkTreeNode>;
+    function remove(id: string): Promise<void>;
+    function removeTree(id: string): Promise<void>;
+    function search(query: string|{
+        query?: string,
+        url?: string,
+        title?: string,
+    }): Promise<BookmarkTreeNode[]>;
+    function update(id: string, changes: { title: string, url: string }): Promise<BookmarkTreeNode>;
+
+    const onCreated: EvListener<(id: string, bookmark: BookmarkTreeNode) => void>;
+    const onRemoved: EvListener<(id: string, removeInfo: {
+        parentId: string,
+        index: number,
+        node: BookmarkTreeNode,
+    }) => void>;
+    const onChanged: EvListener<(id: string, changeInfo: {
+        title: string,
+        url?: string,
+    }) => void>;
+    const onMoved: EvListener<(id: string, moveInfo: {
+        parentId: string,
+        index: number,
+        oldParentId: string,
+        oldIndex: number,
+    }) => void>;
+}
+
 declare namespace browser.browserAction {
     type ColorArray = [number, number, number, number];
     type ImageDataType = ImageData;

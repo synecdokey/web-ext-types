@@ -8,6 +8,7 @@ TypeScript type definitions for WebExtensions
 
 What is implemented:
 - `alarms`
+- `bookmarks`
 - `browserAction`
 - `commands`
 - `contextMenus`
