@@ -262,6 +262,53 @@ declare namespace browser.contextualIdentities {
     function remove(cookieStoreId: string): Promise<ContextualIdentity|null>;
 }
 
+declare namespace browser.cookies {
+    type Cookie = {
+        name: string,
+        value: string,
+        domain: string,
+        hostOnly: boolean,
+        path: string,
+        secure: boolean,
+        httpOnly: boolean,
+        session: boolean,
+        expirationDate?: number,
+        storeId: string,
+    };
+
+    type CookieStore = {
+        id: string,
+        tabIds: number[],
+    };
+
+    type OnChangedCause = "evicted" | "expired" | "explicit" | "expired_overwrite"| "overwrite";
+
+    function get(details: { url: string, name: string, storeId?: string }): Promise<Cookie|null>;
+    function getAll(details: {
+        url?: string,
+        name?: string,
+        domain?: string,
+        path?: string,
+        secure?: boolean,
+        session?: boolean,
+        storeId?: string,
+    }): Promise<Cookie[]>;
+    function set(details: {
+        url: string,
+        name?: string,
+        domain?: string,
+        path?: string,
+        secure?: boolean,
+        httpOnly?: boolean,
+        expirationDate?: number,
+        storeId?: string,
+    }): Promise<Cookie>;
+    function remove(details: { url: string, name: string, storeId?: string }): Promise<Cookie|null>;
+    function getAllCookieStores(): Promise<CookieStore[]>;
+
+    const onChanged: Listener<{ removed: boolean, cookie: Cookie, cause: OnChangedCause }>;
+}
+
 declare namespace browser.events {
     type UrlFilter = {
         hostContainsOptional?: string,
