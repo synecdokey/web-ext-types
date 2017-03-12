@@ -10,9 +10,15 @@ What is implemented:
 - `alarms`
 - `browserAction`
 - `commands`
+- `contextMenus`
 - `events`
+- `extensionTypes`
+- `identity`
+- `idle`
+- `management`
 - `omnibox`
 - `runtime`
+- `tabs`
 
 ## Requirements
 
