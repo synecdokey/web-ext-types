@@ -13,6 +13,7 @@ What is implemented:
 - `browsingData`
 - `commands`
 - `contextMenus`
+- `contextualIdentities`
 - `events`
 - `extensionTypes`
 - `identity`

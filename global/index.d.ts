@@ -236,6 +236,32 @@ declare namespace browser.contextMenus {
     const onClicked: EvListener<(info: OnClickData, tab: browser.tabs.Tab) => void>;
 }
 
+declare namespace browser.contextualIdentities {
+    type IdentityColor = "blue" | "turquoise" | "green" | "yellow" | "orange" | "red" | "pink" | "purple";
+    type IdentityIcon = "fingerprint" | "briefcase" | "dollar" | "cart" | "circle";
+
+    type ContextualIdentity = {
+        cookieStoreId: string,
+        color: IdentityColor,
+        icon: IdentityIcon,
+        name: string,
+    };
+
+    function create(details: {
+        name: string,
+        color: IdentityColor,
+        icon: IdentityIcon,
+    }): Promise<ContextualIdentity>;
+    function get(cookieStoreId: string): Promise<ContextualIdentity|null>;
+    function query(details: { name?: string }): Promise<ContextualIdentity[]>;
+    function update(cookieStoreId: string, details: {
+        name: string,
+        color: IdentityColor,
+        icon: IdentityIcon,
+    }): Promise<ContextualIdentity>;
+    function remove(cookieStoreId: string): Promise<ContextualIdentity|null>;
+}
+
 declare namespace browser.events {
     type UrlFilter = {
         hostContainsOptional?: string,
