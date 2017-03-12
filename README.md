@@ -18,6 +18,7 @@ What is implemented:
 - `management`
 - `omnibox`
 - `runtime`
+- `storage`
 - `tabs`
 - `topSites`
 
