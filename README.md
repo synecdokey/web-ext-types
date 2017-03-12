@@ -10,6 +10,7 @@ What is implemented:
 - `alarms`
 - `bookmarks`
 - `browserAction`
+- `browsingData`
 - `commands`
 - `contextMenus`
 - `events`

@@ -138,6 +138,42 @@ declare namespace browser.browserAction {
     const onClicked: Listener<browser.tabs.Tab>;
 }
 
+declare namespace browser.browsingData {
+    type DataTypeSet = {
+        cache?: boolean,
+        cookies?: boolean,
+        downloads?: boolean,
+        fileSystems?: boolean,
+        formData?: boolean,
+        history?: boolean,
+        indexedDB?: boolean,
+        localStorage?: boolean,
+        passwords?: boolean,
+        pluginData?: boolean,
+        serverBoundCertificates?: boolean,
+        serviceWorkers?: boolean,
+    };
+
+    type DataRemovalOptions = {
+        since?: number,
+        originTypes?: { unprotectedWeb: boolean },
+    };
+
+    function remove(removalOptions: DataRemovalOptions, dataTypes: DataTypeSet): Promise<void>;
+    function removeCache(removalOptions?: DataRemovalOptions): Promise<void>;
+    function removeCookies(removalOptions: DataRemovalOptions): Promise<void>;
+    function removeDownloads(removalOptions: DataRemovalOptions): Promise<void>;
+    function removeFormData(removalOptions: DataRemovalOptions): Promise<void>;
+    function removeHistory(removalOptions: DataRemovalOptions): Promise<void>;
+    function removePasswords(removalOptions: DataRemovalOptions): Promise<void>;
+    function removePluginData(removalOptions: DataRemovalOptions): Promise<void>;
+    function settings(): Promise<{
+        options: DataRemovalOptions,
+        dataToRemove: DataTypeSet,
+        dataRemovalPermitted: DataTypeSet,
+    }>;
+}
+
 declare namespace browser.commands {
     type Command = {
         name?: string,
