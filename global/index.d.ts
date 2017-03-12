@@ -87,6 +87,56 @@ declare namespace browser.commands {
     const onCommand: Listener<string>;
 }
 
+declare namespace browser.contextMenus {
+    type ContextType = "all" | "page" | "frame" | "page" | "link" | "editable" | "image"
+        | "video" | "audio" | "launcher" | "browser_action" | "page_action" | "password" | "tab";
+
+    type ItemType = "normal" | "checkbox" | "radio" | "separator";
+
+    type OnClickData = {
+        menuItemId: number|string,
+        editable: boolean,
+        parentMenuItemId?: number|string,
+        mediaType?: string,
+        linkUrl?: string,
+        srcUrl?: string,
+        pageUrl?: string,
+        frameUrl?: string,
+        selectionText?: string,
+        wasChecked?: boolean,
+        checked?: boolean,
+    };
+
+    const ACTION_MENU_TOP_LEVEL_LIMIT: number;
+
+    function create(createProperties: {
+        type?: ItemType,
+        title?: string,
+        checked?: boolean,
+        contexts?: ContextType[],
+        onclick?: (info: OnClickData, tab: browser.tabs.Tab) => void,
+        parentId?: number|string,
+        documentUrlPatterns?: string[],
+        targetUrlPatterns?: string[],
+        enabled?: boolean,
+    }, callback: () => void): number|string;
+    function update(id: number|string, updateProperties: {
+        type?: ItemType,
+        title?: string,
+        checked?: boolean,
+        contexts?: ContextType[],
+        onclick?: (info: OnClickData, tab: browser.tabs.Tab) => void,
+        parentId?: number|string,
+        documentUrlPatterns?: string[],
+        targetUrlPatterns?: string[],
+        enabled?: boolean,
+    }): Promise<void>;
+    function remove(menuItemId: number|string): Promise<void>;
+    function removeAll(): Promise<void>;
+
+    const onClicked: EvListener<(info: OnClickData, tab: browser.tabs.Tab) => void>;
+}
+
 declare namespace browser.events {
     type UrlFilter = {
         hostContainsOptional?: string,

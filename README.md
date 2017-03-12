@@ -10,6 +10,7 @@ What is implemented:
 - `alarms`
 - `browserAction`
 - `commands`
+- `contextMenus`
 - `events`
 - `extensionTypes`
 - `identity`
