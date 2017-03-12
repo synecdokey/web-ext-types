@@ -490,3 +490,11 @@ declare namespace browser.tabs {
         zoomSettings: ZoomSettings,
     }>;
 }
+
+declare namespace browser.topSites {
+    type MostVisitedURL = {
+        title: string,
+        url: string,
+    };
+    function get(): Promise<MostVisitedURL[]>;
+}

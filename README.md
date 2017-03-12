@@ -19,6 +19,7 @@ What is implemented:
 - `omnibox`
 - `runtime`
 - `tabs`
+- `topSites`
 
 ## Requirements
 
