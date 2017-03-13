@@ -8,9 +8,14 @@ TypeScript type definitions for WebExtensions
 
 What is implemented:
 - `alarms`
+- `bookmarks`
 - `browserAction`
+- `browsingData`
 - `commands`
 - `contextMenus`
+- `contextualIdentities`
+- `cookies`
+- `downloads`
 - `events`
 - `extensionTypes`
 - `identity`
@@ -18,7 +23,9 @@ What is implemented:
 - `management`
 - `omnibox`
 - `runtime`
+- `storage`
 - `tabs`
+- `topSites`
 
 ## Requirements
 

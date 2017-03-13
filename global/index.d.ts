@@ -46,6 +46,69 @@ declare namespace browser.alarms {
     const onAlarm: Listener<Alarm>;
 }
 
+declare namespace browser.bookmarks {
+    type BookmarkTreeNodeUnmodifiable = "managed";
+    type BookmarkTreeNode = {
+        id: string,
+        parentId?: string,
+        index?: number,
+        url?: string,
+        title: string,
+        dateAdded?: number,
+        dateGroupModified?: number,
+        unmodifiable?: BookmarkTreeNodeUnmodifiable,
+        children?: BookmarkTreeNode[],
+    };
+
+    type CreateDetails = {
+        parentId?: string,
+        index?: number,
+        title?: string,
+        url?: string,
+    };
+
+    function create(bookmark: CreateDetails): Promise<BookmarkTreeNode>;
+    function get(idOrIdList: string|string[]): Promise<BookmarkTreeNode[]>;
+    function getChildren(id: string): Promise<BookmarkTreeNode[]>;
+    function getRecent(numberOfItems: number): Promise<BookmarkTreeNode[]>;
+    function getSubTree(id: string): Promise<[BookmarkTreeNode]>;
+    function getTree(id: string): Promise<[BookmarkTreeNode]>;
+
+    type Destination = {
+        parentId: string,
+        index?: number,
+    } | {
+        index: number,
+        parentId?: string,
+    };
+    function move(id: string, destination: Destination): Promise<BookmarkTreeNode>;
+    function remove(id: string): Promise<void>;
+    function removeTree(id: string): Promise<void>;
+    function search(query: string|{
+        query?: string,
+        url?: string,
+        title?: string,
+    }): Promise<BookmarkTreeNode[]>;
+    function update(id: string, changes: { title: string, url: string }): Promise<BookmarkTreeNode>;
+
+    const onCreated: EvListener<(id: string, bookmark: BookmarkTreeNode) => void>;
+    const onRemoved: EvListener<(id: string, removeInfo: {
+        parentId: string,
+        index: number,
+        node: BookmarkTreeNode,
+    }) => void>;
+    const onChanged: EvListener<(id: string, changeInfo: {
+        title: string,
+        url?: string,
+    }) => void>;
+    const onMoved: EvListener<(id: string, moveInfo: {
+        parentId: string,
+        index: number,
+        oldParentId: string,
+        oldIndex: number,
+    }) => void>;
+}
+
 declare namespace browser.browserAction {
     type ColorArray = [number, number, number, number];
     type ImageDataType = ImageData;
@@ -73,6 +136,42 @@ declare namespace browser.browserAction {
     function disable(tabId?: number): void;
 
     const onClicked: Listener<browser.tabs.Tab>;
+}
+
+declare namespace browser.browsingData {
+    type DataTypeSet = {
+        cache?: boolean,
+        cookies?: boolean,
+        downloads?: boolean,
+        fileSystems?: boolean,
+        formData?: boolean,
+        history?: boolean,
+        indexedDB?: boolean,
+        localStorage?: boolean,
+        passwords?: boolean,
+        pluginData?: boolean,
+        serverBoundCertificates?: boolean,
+        serviceWorkers?: boolean,
+    };
+
+    type DataRemovalOptions = {
+        since?: number,
+        originTypes?: { unprotectedWeb: boolean },
+    };
+
+    function remove(removalOptions: DataRemovalOptions, dataTypes: DataTypeSet): Promise<void>;
+    function removeCache(removalOptions?: DataRemovalOptions): Promise<void>;
+    function removeCookies(removalOptions: DataRemovalOptions): Promise<void>;
+    function removeDownloads(removalOptions: DataRemovalOptions): Promise<void>;
+    function removeFormData(removalOptions: DataRemovalOptions): Promise<void>;
+    function removeHistory(removalOptions: DataRemovalOptions): Promise<void>;
+    function removePasswords(removalOptions: DataRemovalOptions): Promise<void>;
+    function removePluginData(removalOptions: DataRemovalOptions): Promise<void>;
+    function settings(): Promise<{
+        options: DataRemovalOptions,
+        dataToRemove: DataTypeSet,
+        dataRemovalPermitted: DataTypeSet,
+    }>;
 }
 
 declare namespace browser.commands {
@@ -137,27 +236,223 @@ declare namespace browser.contextMenus {
     const onClicked: EvListener<(info: OnClickData, tab: browser.tabs.Tab) => void>;
 }
 
+declare namespace browser.contextualIdentities {
+    type IdentityColor = "blue" | "turquoise" | "green" | "yellow" | "orange" | "red" | "pink" | "purple";
+    type IdentityIcon = "fingerprint" | "briefcase" | "dollar" | "cart" | "circle";
+
+    type ContextualIdentity = {
+        cookieStoreId: string,
+        color: IdentityColor,
+        icon: IdentityIcon,
+        name: string,
+    };
+
+    function create(details: {
+        name: string,
+        color: IdentityColor,
+        icon: IdentityIcon,
+    }): Promise<ContextualIdentity>;
+    function get(cookieStoreId: string): Promise<ContextualIdentity|null>;
+    function query(details: { name?: string }): Promise<ContextualIdentity[]>;
+    function update(cookieStoreId: string, details: {
+        name: string,
+        color: IdentityColor,
+        icon: IdentityIcon,
+    }): Promise<ContextualIdentity>;
+    function remove(cookieStoreId: string): Promise<ContextualIdentity|null>;
+}
+
+declare namespace browser.cookies {
+    type Cookie = {
+        name: string,
+        value: string,
+        domain: string,
+        hostOnly: boolean,
+        path: string,
+        secure: boolean,
+        httpOnly: boolean,
+        session: boolean,
+        expirationDate?: number,
+        storeId: string,
+    };
+
+    type CookieStore = {
+        id: string,
+        tabIds: number[],
+    };
+
+    type OnChangedCause = "evicted" | "expired" | "explicit" | "expired_overwrite"| "overwrite";
+
+    function get(details: { url: string, name: string, storeId?: string }): Promise<Cookie|null>;
+    function getAll(details: {
+        url?: string,
+        name?: string,
+        domain?: string,
+        path?: string,
+        secure?: boolean,
+        session?: boolean,
+        storeId?: string,
+    }): Promise<Cookie[]>;
+    function set(details: {
+        url: string,
+        name?: string,
+        domain?: string,
+        path?: string,
+        secure?: boolean,
+        httpOnly?: boolean,
+        expirationDate?: number,
+        storeId?: string,
+    }): Promise<Cookie>;
+    function remove(details: { url: string, name: string, storeId?: string }): Promise<Cookie|null>;
+    function getAllCookieStores(): Promise<CookieStore[]>;
+
+    const onChanged: Listener<{ removed: boolean, cookie: Cookie, cause: OnChangedCause }>;
+}
+
+declare namespace browser.downloads {
+    type FilenameConflictAction = "uniquify" | "overwrite" | "prompt";
+
+    type InterruptReason = "FILE_FAILED" | "FILE_ACCESS_DENIED" | "FILE_NO_SPACE"
+                         | "FILE_NAME_TOO_LONG" | "FILE_TOO_LARGE" | "FILE_VIRUS_INFECTED"
+                         | "FILE_TRANSIENT_ERROR" | "FILE_BLOCKED" | "FILE_SECURITY_CHECK_FAILED"
+                         | "FILE_TOO_SHORT"
+                         | "NETWORK_FAILED" | "NETWORK_TIMEOUT" | "NETWORK_DISCONNECTED"
+                         | "NETWORK_SERVER_DOWN" | "NETWORK_INVALID_REQUEST"
+                         | "SERVER_FAILED" | "SERVER_NO_RANGE" | "SERVER_BAD_CONTENT"
+                         | "SERVER_UNAUTHORIZED" | "SERVER_CERT_PROBLEM" | "SERVER_FORBIDDEN"
+                         | "USER_CANCELED" | "USER_SHUTDOWN" | "CRASH";
+
+    type DangerType = "file" | "url" | "content" | "uncommon" | "host" | "unwanted" | "safe"
+                    | "accepted";
+
+    type State = "in_progress" | "interrupted" | "complete";
+
+    type DownloadItem = {
+        id: number,
+        url: string,
+        referrer: string,
+        filename: string,
+        incognito: boolean,
+        danger: string,
+        mime: string,
+        startTime: string,
+        endTime?: string,
+        estimatedEndTime?: string,
+        state: string,
+        paused: boolean,
+        canResume: boolean,
+        error?: string,
+        bytesReceived: number,
+        totalBytes: number,
+        fileSize: number,
+        exists: boolean,
+        byExtensionId?: string,
+        byExtensionName?: string,
+    };
+
+    type Delta<T> = {
+        current?: T,
+        previous?: T,
+    };
+
+    type StringDelta = Delta<string>;
+    type DoubleDelta = Delta<number>;
+    type BooleanDelta = Delta<boolean>;
+    type DownloadTime = Date|string|number;
+
+    type DownloadQuery = {
+        query?: string[],
+        startedBefore?: DownloadTime,
+        startedAfter?: DownloadTime,
+        endedBefore?: DownloadTime,
+        endedAfter?: DownloadTime,
+        totalBytesGreater?: number,
+        totalBytesLess?: number,
+        filenameRegex?: string,
+        urlRegex?: string,
+        limit?: number,
+        orderBy?: string,
+        id?: number,
+        url?: string,
+        filename?: string,
+        danger?: DangerType,
+        mime?: string,
+        startTime?: string,
+        endTime?: string,
+        state?: State,
+        paused?: boolean,
+        error?: InterruptReason,
+        bytesReceived?: number,
+        totalBytes?: number,
+        fileSize?: number,
+        exists?: boolean,
+    };
+
+    function download(options: {
+        url: string,
+        filename?: string,
+        conflictAction?: string,
+        saveAs?: boolean,
+        method?: string,
+        headers?: { [key: string]: string },
+        body?: string,
+    }): Promise<number>;
+    function search(query: DownloadQuery): Promise<DownloadItem[]>;
+    function pause(downloadId: number): Promise<void>;
+    function resume(downloadId: number): Promise<void>;
+    function cancel(downloadId: number): Promise<void>;
+    // unsupported: function getFileIcon(downloadId: number, options?: { size?: number }):
+    //              Promise<string>;
+    function open(downloadId: number): Promise<void>;
+    function show(downloadId: number): Promise<void>;
+    function showDefaultFolder(): void;
+    function erase(query: DownloadQuery): Promise<number[]>;
+    function removeFile(downloadId: number): Promise<void>;
+    // unsupported: function acceptDanger(downloadId: number): Promise<void>;
+    // unsupported: function drag(downloadId: number): Promise<void>;
+    // unsupported: function setShelfEnabled(enabled: boolean): void;
+
+    const onCreated: Listener<DownloadItem>;
+    const onErased: Listener<number>;
+    const onChanged: Listener<{
+        id: number,
+        url?: StringDelta,
+        filename?: StringDelta,
+        danger?: StringDelta,
+        mime?: StringDelta,
+        startTime?: StringDelta,
+        endTime?: StringDelta,
+        state?: StringDelta,
+        canResume?: BooleanDelta,
+        paused?: BooleanDelta,
+        error?: StringDelta,
+        totalBytes?: DoubleDelta,
+        fileSize?: DoubleDelta,
+        exists?: BooleanDelta,
+    }>;
+}
+
 declare namespace browser.events {
     type UrlFilter = {
-        hostContainsOptional?: string,
-        hostEqualsOptional?: string,
-        hostPrefixOptional?: string,
-        hostSuffixOptional?: string,
-        pathContainsOptional?: string,
-        pathEqualsOptional?: string,
-        pathPrefixOptional?: string,
-        pathSuffixOptional?: string,
-        queryContainsOptional?: string,
-        queryEqualsOptional?: string,
-        queryPrefixOptional?: string,
-        querySuffixOptional?: string,
-        urlContainsOptional?: string,
-        urlEqualsOptional?: string,
-        urlMatchesOptional?: string,
-        originAndPathMatchesOptional?: string,
-        urlPrefixOptional?: string,
-        urlSuffixOptional?: string,
-        schemesOptional?: string[],
+        hostContains?: string,
+        hostEquals?: string,
+        hostPrefix?: string,
+        hostSuffix?: string,
+        pathContains?: string,
+        pathEquals?: string,
+        pathPrefix?: string,
+        pathSuffix?: string,
+        queryContains?: string,
+        queryEquals?: string,
+        queryPrefix?: string,
+        querySuffix?: string,
+        urlContains?: string,
+        urlEquals?: string,
+        urlMatches?: string,
+        originAndPathMatches?: string,
+        urlPrefix?: string,
+        urlSuffix?: string,
+        schemes?: string[],
         ports?: Array<number|number[]>,
     };
 }
@@ -343,6 +638,30 @@ declare namespace browser.runtime {
     const onMessage: EvListener<onMessageEvent>;
 }
 
+declare namespace browser.storage {
+    type StorageArea = {
+        get: (keys: string|string[]|object|null) => Promise<object>,
+        getBytesInUse: (keys: string|string[]|null) => Promise<number>,
+        set: (keys: object) => Promise<void>,
+        remove: (keys: string|string[]) => Promise<void>,
+        clear: () => Promise<void>,
+    };
+
+    type StorageChange = {
+        oldValue?: any,
+        newValue?: any,
+    };
+
+    const sync: StorageArea;
+    const local: StorageArea;
+    const managed: StorageArea;
+
+    type ChangeDict = { [field: string]: StorageChange };
+    type StorageName = "sync"|"local"|"managed";
+
+    const onChanged: EvListener<(changes: ChangeDict, areaName: StorageName) => void>;
+}
+
 declare namespace browser.tabs {
     type MutedInfoReason = "capture" | "extension" | "user";
     type MutedInfo = {
@@ -489,4 +808,12 @@ declare namespace browser.tabs {
         newZoomFactor: number,
         zoomSettings: ZoomSettings,
     }>;
+}
+
+declare namespace browser.topSites {
+    type MostVisitedURL = {
+        title: string,
+        url: string,
+    };
+    function get(): Promise<MostVisitedURL[]>;
 }
