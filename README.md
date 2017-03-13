@@ -17,6 +17,7 @@ What is implemented:
 - `cookies`
 - `downloads`
 - `events`
+- `extension`
 - `extensionTypes`
 - `identity`
 - `idle`

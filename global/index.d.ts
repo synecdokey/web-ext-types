@@ -457,6 +457,20 @@ declare namespace browser.events {
     };
 }
 
+declare namespace browser.extension {
+    type ViewType = "tab" | "notification" | "popup";
+
+    const lastError: string|null;
+    const inIncognitoContext: boolean;
+
+    function getURL(path: string): string;
+    function getViews(fetchProperties?: { type: ViewType, windowId: number }): Window[];
+    function getBackgroundPage(): Window;
+    function isAllowedIncognitoAccess(): Promise<boolean>;
+    function isAllowedFileSchemeAccess(): Promise<boolean>;
+    // unsupported: events as they are deprecated
+}
+
 declare namespace browser.extensionTypes {
     type ImageFormat = "jpeg" | "png";
     type ImageDetails = {
