@@ -309,6 +309,129 @@ declare namespace browser.cookies {
     const onChanged: Listener<{ removed: boolean, cookie: Cookie, cause: OnChangedCause }>;
 }
 
+declare namespace browser.downloads {
+    type FilenameConflictAction = "uniquify" | "overwrite" | "prompt";
+
+    type InterruptReason = "FILE_FAILED" | "FILE_ACCESS_DENIED" | "FILE_NO_SPACE"
+                         | "FILE_NAME_TOO_LONG" | "FILE_TOO_LARGE" | "FILE_VIRUS_INFECTED"
+                         | "FILE_TRANSIENT_ERROR" | "FILE_BLOCKED" | "FILE_SECURITY_CHECK_FAILED"
+                         | "FILE_TOO_SHORT"
+                         | "NETWORK_FAILED" | "NETWORK_TIMEOUT" | "NETWORK_DISCONNECTED"
+                         | "NETWORK_SERVER_DOWN" | "NETWORK_INVALID_REQUEST"
+                         | "SERVER_FAILED" | "SERVER_NO_RANGE" | "SERVER_BAD_CONTENT"
+                         | "SERVER_UNAUTHORIZED" | "SERVER_CERT_PROBLEM" | "SERVER_FORBIDDEN"
+                         | "USER_CANCELED" | "USER_SHUTDOWN" | "CRASH";
+
+    type DangerType = "file" | "url" | "content" | "uncommon" | "host" | "unwanted" | "safe"
+                    | "accepted";
+
+    type State = "in_progress" | "interrupted" | "complete";
+
+    type DownloadItem = {
+        id: number,
+        url: string,
+        referrer: string,
+        filename: string,
+        incognito: boolean,
+        danger: string,
+        mime: string,
+        startTime: string,
+        endTime?: string,
+        estimatedEndTime?: string,
+        state: string,
+        paused: boolean,
+        canResume: boolean,
+        error?: string,
+        bytesReceived: number,
+        totalBytes: number,
+        fileSize: number,
+        exists: boolean,
+        byExtensionId?: string,
+        byExtensionName?: string,
+    };
+
+    type Delta<T> = {
+        current?: T,
+        previous?: T,
+    };
+
+    type StringDelta = Delta<string>;
+    type DoubleDelta = Delta<number>;
+    type BooleanDelta = Delta<boolean>;
+    type DownloadTime = Date|string|number;
+
+    type DownloadQuery = {
+        query?: string[],
+        startedBefore?: DownloadTime,
+        startedAfter?: DownloadTime,
+        endedBefore?: DownloadTime,
+        endedAfter?: DownloadTime,
+        totalBytesGreater?: number,
+        totalBytesLess?: number,
+        filenameRegex?: string,
+        urlRegex?: string,
+        limit?: number,
+        orderBy?: string,
+        id?: number,
+        url?: string,
+        filename?: string,
+        danger?: DangerType,
+        mime?: string,
+        startTime?: string,
+        endTime?: string,
+        state?: State,
+        paused?: boolean,
+        error?: InterruptReason,
+        bytesReceived?: number,
+        totalBytes?: number,
+        fileSize?: number,
+        exists?: boolean,
+    };
+
+    function download(options: {
+        url: string,
+        filename?: string,
+        conflictAction?: string,
+        saveAs?: boolean,
+        method?: string,
+        headers?: { [key: string]: string },
+        body?: string,
+    }): Promise<number>;
+    function search(query: DownloadQuery): Promise<DownloadItem[]>;
+    function pause(downloadId: number): Promise<void>;
+    function resume(downloadId: number): Promise<void>;
+    function cancel(downloadId: number): Promise<void>;
+    // unsupported: function getFileIcon(downloadId: number, options?: { size?: number }):
+    //              Promise<string>;
+    function open(downloadId: number): Promise<void>;
+    function show(downloadId: number): Promise<void>;
+    function showDefaultFolder(): void;
+    function erase(query: DownloadQuery): Promise<number[]>;
+    function removeFile(downloadId: number): Promise<void>;
+    // unsupported: function acceptDanger(downloadId: number): Promise<void>;
+    // unsupported: function drag(downloadId: number): Promise<void>;
+    // unsupported: function setShelfEnabled(enabled: boolean): void;
+
+    const onCreated: Listener<DownloadItem>;
+    const onErased: Listener<number>;
+    const onChanged: Listener<{
+        id: number,
+        url?: StringDelta,
+        filename?: StringDelta,
+        danger?: StringDelta,
+        mime?: StringDelta,
+        startTime?: StringDelta,
+        endTime?: StringDelta,
+        state?: StringDelta,
+        canResume?: BooleanDelta,
+        paused?: BooleanDelta,
+        error?: StringDelta,
+        totalBytes?: DoubleDelta,
+        fileSize?: DoubleDelta,
+        exists?: BooleanDelta,
+    }>;
+}
+
 declare namespace browser.events {
     type UrlFilter = {
         hostContainsOptional?: string,

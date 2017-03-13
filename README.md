@@ -15,6 +15,7 @@ What is implemented:
 - `contextMenus`
 - `contextualIdentities`
 - `cookies`
+- `downloads`
 - `events`
 - `extensionTypes`
 - `identity`
