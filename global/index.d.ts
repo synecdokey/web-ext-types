@@ -488,6 +488,59 @@ declare namespace browser.extensionTypes {
     };
 }
 
+declare namespace browser.history {
+    type TransitionType = "link" | "typed" | "auto_bookmark" | "auto_subframe" | "manual_subframe"
+                        | "generated" | "auto_toplevel" | "form_submit" | "reload" | "keyword"
+                        | "keyword_generated";
+
+    type HistoryItem = {
+        id: string,
+        url?: string,
+        title?: string,
+        lastVisitTime?: number,
+        visitCount?: number,
+        typedCount?: number,
+    };
+
+    type VisitItem = {
+        id: string,
+        visitId: string,
+        VisitTime?: number,
+        refferingVisitId: string,
+        transition: TransitionType,
+    };
+
+    function search(query: {
+        text: string,
+        startTime?: number|string|Date,
+        endTime?: number|string|Date,
+        maxResults?: number,
+    }): Promise<HistoryItem[]>;
+
+    function getVisits(details: { url: string }): Promise<VisitItem[]>;
+
+    function addUrl(details: {
+        url: string,
+        title?: string,
+        transition?: TransitionType,
+        visitTime?: number|string|Date,
+    }): Promise<void>;
+
+    function deleteUrl(details: { url: string }): Promise<void>;
+
+    function deleteRange(range: {
+        startTime: number|string|Date,
+        endTime: number|string|Date,
+    }): Promise<void>;
+
+    function deleteAll(): Promise<void>;
+
+    const onVisited: Listener<HistoryItem>;
+
+    // TODO: Ensure that urls is not `urls: [string]` instead
+    const onVisitRemoved: Listener<{ allHistory: boolean, urls: string[] }>;
+}
+
 declare namespace browser.identity {
     function getRedirectURL(): string;
     function launchWebAuthFlow(details: { url: string, interactive: boolean }): Promise<string>;

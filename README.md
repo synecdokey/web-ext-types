@@ -19,6 +19,7 @@ What is implemented:
 - `events`
 - `extension`
 - `extensionTypes`
+- `history`
 - `identity`
 - `idle`
 - `management`
