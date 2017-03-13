@@ -20,6 +20,7 @@ What is implemented:
 - `extension`
 - `extensionTypes`
 - `history`
+- `i18n`
 - `identity`
 - `idle`
 - `management`

@@ -541,6 +541,21 @@ declare namespace browser.history {
     const onVisitRemoved: Listener<{ allHistory: boolean, urls: string[] }>;
 }
 
+declare namespace browser.i18n {
+    type LanguageCode = string;
+
+    function getAcceptLanguages(): Promise<LanguageCode[]>;
+
+    function getMessage(messageName: string, substitutions?: string|string[]): string;
+
+    function getUILanguage(): LanguageCode;
+
+    function detectLanguage(text: string): Promise<{
+        isReliable: boolean,
+        languages: { language: LanguageCode, percentage: number }[],
+    }>;
+}
+
 declare namespace browser.identity {
     function getRedirectURL(): string;
     function launchWebAuthFlow(details: { url: string, interactive: boolean }): Promise<string>;
