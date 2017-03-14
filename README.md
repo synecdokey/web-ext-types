@@ -24,6 +24,7 @@ What is implemented:
 - `identity`
 - `idle`
 - `management`
+- `notifications`
 - `omnibox`
 - `runtime`
 - `storage`

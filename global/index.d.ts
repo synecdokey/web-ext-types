@@ -596,6 +596,27 @@ declare namespace browser.management {
     function uninstallSelf(options: { showConfirmDialog: boolean, dialogMessage: string }): Promise<void>;
 }
 
+declare namespace browser.notifications {
+    type TemplateType = "basic" /* | "image" | "list" | "progress" */;
+
+    type NotificationOptions = {
+        type: TemplateType,
+        message: string,
+        title: string,
+        iconUrl?: string,
+    };
+
+    function create(id: string|null, options: NotificationOptions): Promise<string>;
+
+    function clear(id: string): Promise<boolean>;
+
+    function getAll(): Promise<{ [key: string]: NotificationOptions }>;
+
+    const onClosed: Listener<string>;
+
+    const onClicked: Listener<string>;
+}
+
 declare namespace browser.omnibox {
     type OnInputEnteredDisposition = "currentTab" | "newForegroundTab" | "newBackgroundTab";
     type SuggestResult = {
