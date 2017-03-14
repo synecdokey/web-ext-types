@@ -634,6 +634,30 @@ declare namespace browser.omnibox {
     const onInputCancelled: Listener<void>;
 }
 
+declare namespace browser.pageAction {
+    type ImageDataType = ImageData;
+
+    function show(tabId: number): void;
+
+    function hide(tabId: number): void;
+
+    function setTitle(details: { tabId: number, title: string }): void;
+
+    function getTitle(details: { tabId: number }): Promise<string>;
+
+    function setIcon(details: {
+        tabId: number,
+        path?: string|object,
+        imageData?: ImageDataType,
+    }): Promise<void>;
+
+    function setPopup(details: { tabId: number, popup: string }): void;
+
+    function getPopup(details: { tabId: number }): Promise<string>;
+
+    const onClicked: Listener<browser.tabs.Tab>;
+}
+
 declare namespace browser.runtime {
     const lastError: string | null;
     const id: string;

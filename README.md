@@ -26,6 +26,7 @@ What is implemented:
 - `management`
 - `notifications`
 - `omnibox`
+- `pageAction`
 - `runtime`
 - `storage`
 - `tabs`
