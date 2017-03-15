@@ -768,7 +768,7 @@ declare namespace browser.runtime {
 declare namespace browser.storage {
     type StorageArea = {
         get: (keys: string|string[]|object|null) => Promise<object>,
-        getBytesInUse: (keys: string|string[]|null) => Promise<number>,
+        // unsupported: getBytesInUse: (keys: string|string[]|null) => Promise<number>,
         set: (keys: object) => Promise<void>,
         remove: (keys: string|string[]) => Promise<void>,
         clear: () => Promise<void>,
@@ -781,10 +781,10 @@ declare namespace browser.storage {
 
     const sync: StorageArea;
     const local: StorageArea;
-    const managed: StorageArea;
+    // unsupported: const managed: StorageArea;
 
     type ChangeDict = { [field: string]: StorageChange };
-    type StorageName = "sync"|"local"|"managed";
+    type StorageName = "sync"|"local" /* |"managed" */;
 
     const onChanged: EvListener<(changes: ChangeDict, areaName: StorageName) => void>;
 }
