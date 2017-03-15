@@ -1015,3 +1015,80 @@ declare namespace browser.webNavigation {
 
     const onHistoryStateUpdated: TransitionNavListener;
 }
+
+declare namespace browser.webRequest {
+    type ResourceType = "main_frame" | "sub_frame" | "stylesheet" | "script" | "image" | "object"
+                      | "xmlhttprequest" | "xbl" | "xslt" | "ping" | "beacon" | "xml_dtd" | "font"
+                      | "media" | "websocket" | "csp_report" | "imageset" | "web_manifest"
+                      | "other";
+
+    type RequestFilter = {
+        urls: string[],
+        types?: ResourceType[],
+        tabId?: number,
+        windowId?: number,
+    };
+
+    type HttpHeaders = ({ name: string, binaryValue: number[], value?: string }
+                        | { name: string, value: string, binaryValue?: number[] })[];
+
+    type BlockingResponse = {
+        cancel?: boolean,
+        redirectUrl?: string,
+        requestHeaders?: HttpHeaders,
+        responseHeaders?: HttpHeaders,
+        // unsupported: authCredentials?: { username: string, password: string },
+    };
+
+    type UploadData = {
+        bytes?: ArrayBuffer,
+        file?: string,
+    };
+
+    const MAX_HANDLER_BEHAVIOR_CHANGED_CALLS_PER_10_MINUTES: number;
+
+    function handlerBehaviorChanged(): Promise<void>;
+
+    // TODO: Enforce the return result of the addListener call in the contract
+    interface ReqListener<T, U> {
+        addListener: (
+            callback: (arg: T) => void,
+            filter: RequestFilter,
+            extraInfoSpec?: Array<U>,
+        ) => BlockingResponse|Promise<BlockingResponse>;
+        removeListener: (callback: (arg: T) => void) => void;
+        hasListener: (callback: (arg: T) => void) => boolean;
+    }
+
+    const onBeforeRequest: ReqListener<{
+        requestId: string,
+        url: string,
+        method: string,
+        frameId: number,
+        parentFrameId: number,
+        requestBody?: {
+            error?: string,
+            formData?: { [key: string]: string[] },
+            raw?: UploadData[],
+        },
+        tabId: number,
+        type: ResourceType,
+        timeStamp: number,
+        originUrl: string,
+    }, "blocking"|"requestBody">;
+
+    const onBeforeSendHeaders: ReqListener<{
+        requestId: string,
+        url: string,
+        method: string,
+        frameId: number,
+        parentFrameId: number,
+        tabId: number,
+        type: ResourceType,
+        timeStamp: number,
+        originUrl: string,
+        requestHeaders?: HttpHeaders,
+    }, "blocking"|"requestHeaders">;
+
+    // TODO: finish that API
+}

@@ -32,6 +32,7 @@ What is implemented:
 - `tabs`
 - `topSites`
 - `webNavigation`
+- `webRequest`, partly
 
 ## Requirements
 
