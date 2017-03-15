@@ -944,3 +944,74 @@ declare namespace browser.topSites {
     };
     function get(): Promise<MostVisitedURL[]>;
 }
+
+declare namespace browser.webNavigation {
+    type TransitionType = "link" | "auto_subframe" | "form_submit" | "reload";
+                        // unsupported: | "typed" | "auto_bookmark" | "manual_subframe"
+                        //              | "generated" | "start_page" | "keyword"
+                        //              | "keyword_generated";
+
+    type TransitionQualifier = "client_redirect" | "server_redirect" | "forward_back";
+                               // unsupported: "from_address_bar";
+
+    function getFrame(details: {
+        tabId: number,
+        processId: number,
+        frameId: number,
+    }): Promise<{ errorOccured: boolean, url: string, parentFrameId: number }>;
+
+    function getAllFrames(details: { tabId: number }): Promise<{
+        errorOccured: boolean,
+        processId: number,
+        frameId: number,
+        parentFrameId: number,
+        url: string,
+    }>;
+
+    interface NavListener<T> {
+        addListener: (callback: (arg: T) => void, filter?: {
+            url: browser.events.UrlFilter[],
+        }) => void;
+        removeListener: (callback: (arg: T) => void) => void;
+        hasListener: (callback: (arg: T) => void) => boolean;
+    }
+
+    type DefaultNavListener = NavListener<{
+        tabId: number,
+        url: string,
+        processId: number,
+        frameId: number,
+        timeStamp: number,
+    }>;
+
+    type TransitionNavListener = NavListener<{
+        tabId: number,
+        url: string,
+        processId: number,
+        frameId: number,
+        timeStamp: number,
+        transitionType: TransitionType,
+        transitionQualifiers: TransitionQualifier[],
+    }>;
+
+    const onBeforeNavigate: NavListener<{
+        tabId: number,
+        url: string,
+        processId: number,
+        frameId: number,
+        parentFrameId: number,
+        timeStamp: number,
+    }>;
+
+    const onCommited: TransitionNavListener;
+
+    const onDOMContentLoaded: DefaultNavListener;
+
+    const onCompleted: DefaultNavListener;
+
+    const onErrorOccurred: DefaultNavListener; // error field unsupported
+
+    const onReferenceFragmentUpdated: TransitionNavListener;
+
+    const onHistoryStateUpdated: TransitionNavListener;
+}

@@ -31,6 +31,7 @@ What is implemented:
 - `storage`
 - `tabs`
 - `topSites`
+- `webNavigation`
 
 ## Requirements
 
