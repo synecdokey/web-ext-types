@@ -1092,3 +1092,82 @@ declare namespace browser.webRequest {
 
     // TODO: finish that API
 }
+
+declare namespace browser.windows {
+    type WindowType = "normal" | "popup" | "panel" | "devtools";
+
+    type WindowState = "normal" | "minimized" | "maximized" | "fullscreen" | "docked";
+
+    type Window = {
+        id?: number,
+        focused: boolean,
+        top?: number,
+        left?: number,
+        width?: number,
+        height?: number,
+        tabs?: browser.tabs.Tab[],
+        incognito: boolean,
+        type?: WindowType,
+        state?: WindowState,
+        alwaysOnTop: boolean,
+        sessionId?: string,
+    };
+
+    type CreateType = "normal" | "popup" | "panel" | "detached_panel";
+
+    const WINDOW_ID_NONE: number;
+
+    const INDOW_ID_CURRENT: number;
+
+    function get(windowId: number, getInfo?: {
+        populate?: boolean,
+        windowTypes?: WindowType[],
+    }): Promise<browser.windows.Window>;
+
+    function getCurrent(getInfo?: {
+        populate?: boolean,
+        windowTypes?: WindowType[],
+    }): Promise<browser.windows.Window>;
+
+    function getLastFocused(getInfo?: {
+        populate?: boolean,
+        windowTypes?: WindowType[],
+    }): Promise<browser.windows.Window>;
+
+    function getAll(getInfo?: {
+        populate?: boolean,
+        windowTypes?: WindowType[],
+    }): Promise<browser.windows.Window[]>;
+
+    // TODO: url and tabId should be exclusive
+    function create(createData?: {
+        url?: string|string[],
+        tabId?: number,
+        left?: number,
+        top?: number,
+        width?: number,
+        height?: number,
+        // unsupported: focused?: boolean,
+        incognito?: boolean,
+        type?: CreateType,
+        state?: WindowState,
+    }): Promise<browser.windows.Window>;
+
+    function update(windowId: number, updateInfo: {
+        left?: number,
+        top?: number,
+        width?: number,
+        height?: number,
+        focused?: boolean,
+        drawAttention?: boolean,
+        state?: WindowState,
+    }): Promise<browser.windows.Window>;
+
+    function remove(windowId: number): Promise<void>;
+
+    const onCreated: Listener<browser.windows.Window>;
+
+    const onRemoved: Listener<number>;
+
+    const onFocusChanged: Listener<number>;
+}

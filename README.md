@@ -33,6 +33,7 @@ What is implemented:
 - `topSites`
 - `webNavigation`
 - `webRequest`, partly
+- `windows`
 
 ## Requirements
 
