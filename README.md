@@ -4,9 +4,7 @@
 
 TypeScript type definitions for WebExtensions
 
-:warning: This is in a WIP state. :warning:
-
-What is implemented:
+Almost everything is implemented:
 - `alarms`
 - `bookmarks`
 - `browserAction`
@@ -17,15 +15,23 @@ What is implemented:
 - `cookies`
 - `downloads`
 - `events`
+- `extension`
 - `extensionTypes`
+- `history`
+- `i18n`
 - `identity`
 - `idle`
 - `management`
+- `notifications`
 - `omnibox`
+- `pageAction`
 - `runtime`
 - `storage`
 - `tabs`
 - `topSites`
+- `webNavigation`
+- `webRequest`, partly
+- `windows`
 
 ## Requirements
 

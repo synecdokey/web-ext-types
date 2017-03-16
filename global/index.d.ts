@@ -457,6 +457,20 @@ declare namespace browser.events {
     };
 }
 
+declare namespace browser.extension {
+    type ViewType = "tab" | "notification" | "popup";
+
+    const lastError: string|null;
+    const inIncognitoContext: boolean;
+
+    function getURL(path: string): string;
+    function getViews(fetchProperties?: { type: ViewType, windowId: number }): Window[];
+    function getBackgroundPage(): Window;
+    function isAllowedIncognitoAccess(): Promise<boolean>;
+    function isAllowedFileSchemeAccess(): Promise<boolean>;
+    // unsupported: events as they are deprecated
+}
+
 declare namespace browser.extensionTypes {
     type ImageFormat = "jpeg" | "png";
     type ImageDetails = {
@@ -472,6 +486,74 @@ declare namespace browser.extensionTypes {
         // unsupported: matchAboutBlank: boolean,
         runAt: RunAt,
     };
+}
+
+declare namespace browser.history {
+    type TransitionType = "link" | "typed" | "auto_bookmark" | "auto_subframe" | "manual_subframe"
+                        | "generated" | "auto_toplevel" | "form_submit" | "reload" | "keyword"
+                        | "keyword_generated";
+
+    type HistoryItem = {
+        id: string,
+        url?: string,
+        title?: string,
+        lastVisitTime?: number,
+        visitCount?: number,
+        typedCount?: number,
+    };
+
+    type VisitItem = {
+        id: string,
+        visitId: string,
+        VisitTime?: number,
+        refferingVisitId: string,
+        transition: TransitionType,
+    };
+
+    function search(query: {
+        text: string,
+        startTime?: number|string|Date,
+        endTime?: number|string|Date,
+        maxResults?: number,
+    }): Promise<HistoryItem[]>;
+
+    function getVisits(details: { url: string }): Promise<VisitItem[]>;
+
+    function addUrl(details: {
+        url: string,
+        title?: string,
+        transition?: TransitionType,
+        visitTime?: number|string|Date,
+    }): Promise<void>;
+
+    function deleteUrl(details: { url: string }): Promise<void>;
+
+    function deleteRange(range: {
+        startTime: number|string|Date,
+        endTime: number|string|Date,
+    }): Promise<void>;
+
+    function deleteAll(): Promise<void>;
+
+    const onVisited: Listener<HistoryItem>;
+
+    // TODO: Ensure that urls is not `urls: [string]` instead
+    const onVisitRemoved: Listener<{ allHistory: boolean, urls: string[] }>;
+}
+
+declare namespace browser.i18n {
+    type LanguageCode = string;
+
+    function getAcceptLanguages(): Promise<LanguageCode[]>;
+
+    function getMessage(messageName: string, substitutions?: string|string[]): string;
+
+    function getUILanguage(): LanguageCode;
+
+    function detectLanguage(text: string): Promise<{
+        isReliable: boolean,
+        languages: { language: LanguageCode, percentage: number }[],
+    }>;
 }
 
 declare namespace browser.identity {
@@ -514,6 +596,27 @@ declare namespace browser.management {
     function uninstallSelf(options: { showConfirmDialog: boolean, dialogMessage: string }): Promise<void>;
 }
 
+declare namespace browser.notifications {
+    type TemplateType = "basic" /* | "image" | "list" | "progress" */;
+
+    type NotificationOptions = {
+        type: TemplateType,
+        message: string,
+        title: string,
+        iconUrl?: string,
+    };
+
+    function create(id: string|null, options: NotificationOptions): Promise<string>;
+
+    function clear(id: string): Promise<boolean>;
+
+    function getAll(): Promise<{ [key: string]: NotificationOptions }>;
+
+    const onClosed: Listener<string>;
+
+    const onClicked: Listener<string>;
+}
+
 declare namespace browser.omnibox {
     type OnInputEnteredDisposition = "currentTab" | "newForegroundTab" | "newBackgroundTab";
     type SuggestResult = {
@@ -529,6 +632,30 @@ declare namespace browser.omnibox {
     const onInputEntered:
         EvListener<(text: string, disposition: OnInputEnteredDisposition) => void>;
     const onInputCancelled: Listener<void>;
+}
+
+declare namespace browser.pageAction {
+    type ImageDataType = ImageData;
+
+    function show(tabId: number): void;
+
+    function hide(tabId: number): void;
+
+    function setTitle(details: { tabId: number, title: string }): void;
+
+    function getTitle(details: { tabId: number }): Promise<string>;
+
+    function setIcon(details: {
+        tabId: number,
+        path?: string|object,
+        imageData?: ImageDataType,
+    }): Promise<void>;
+
+    function setPopup(details: { tabId: number, popup: string }): void;
+
+    function getPopup(details: { tabId: number }): Promise<string>;
+
+    const onClicked: Listener<browser.tabs.Tab>;
 }
 
 declare namespace browser.runtime {
@@ -641,7 +768,7 @@ declare namespace browser.runtime {
 declare namespace browser.storage {
     type StorageArea = {
         get: (keys: string|string[]|object|null) => Promise<object>,
-        getBytesInUse: (keys: string|string[]|null) => Promise<number>,
+        // unsupported: getBytesInUse: (keys: string|string[]|null) => Promise<number>,
         set: (keys: object) => Promise<void>,
         remove: (keys: string|string[]) => Promise<void>,
         clear: () => Promise<void>,
@@ -654,10 +781,10 @@ declare namespace browser.storage {
 
     const sync: StorageArea;
     const local: StorageArea;
-    const managed: StorageArea;
+    // unsupported: const managed: StorageArea;
 
     type ChangeDict = { [field: string]: StorageChange };
-    type StorageName = "sync"|"local"|"managed";
+    type StorageName = "sync"|"local" /* |"managed" */;
 
     const onChanged: EvListener<(changes: ChangeDict, areaName: StorageName) => void>;
 }
@@ -816,4 +943,231 @@ declare namespace browser.topSites {
         url: string,
     };
     function get(): Promise<MostVisitedURL[]>;
+}
+
+declare namespace browser.webNavigation {
+    type TransitionType = "link" | "auto_subframe" | "form_submit" | "reload";
+                        // unsupported: | "typed" | "auto_bookmark" | "manual_subframe"
+                        //              | "generated" | "start_page" | "keyword"
+                        //              | "keyword_generated";
+
+    type TransitionQualifier = "client_redirect" | "server_redirect" | "forward_back";
+                               // unsupported: "from_address_bar";
+
+    function getFrame(details: {
+        tabId: number,
+        processId: number,
+        frameId: number,
+    }): Promise<{ errorOccured: boolean, url: string, parentFrameId: number }>;
+
+    function getAllFrames(details: { tabId: number }): Promise<{
+        errorOccured: boolean,
+        processId: number,
+        frameId: number,
+        parentFrameId: number,
+        url: string,
+    }>;
+
+    interface NavListener<T> {
+        addListener: (callback: (arg: T) => void, filter?: {
+            url: browser.events.UrlFilter[],
+        }) => void;
+        removeListener: (callback: (arg: T) => void) => void;
+        hasListener: (callback: (arg: T) => void) => boolean;
+    }
+
+    type DefaultNavListener = NavListener<{
+        tabId: number,
+        url: string,
+        processId: number,
+        frameId: number,
+        timeStamp: number,
+    }>;
+
+    type TransitionNavListener = NavListener<{
+        tabId: number,
+        url: string,
+        processId: number,
+        frameId: number,
+        timeStamp: number,
+        transitionType: TransitionType,
+        transitionQualifiers: TransitionQualifier[],
+    }>;
+
+    const onBeforeNavigate: NavListener<{
+        tabId: number,
+        url: string,
+        processId: number,
+        frameId: number,
+        parentFrameId: number,
+        timeStamp: number,
+    }>;
+
+    const onCommited: TransitionNavListener;
+
+    const onDOMContentLoaded: DefaultNavListener;
+
+    const onCompleted: DefaultNavListener;
+
+    const onErrorOccurred: DefaultNavListener; // error field unsupported
+
+    const onReferenceFragmentUpdated: TransitionNavListener;
+
+    const onHistoryStateUpdated: TransitionNavListener;
+}
+
+declare namespace browser.webRequest {
+    type ResourceType = "main_frame" | "sub_frame" | "stylesheet" | "script" | "image" | "object"
+                      | "xmlhttprequest" | "xbl" | "xslt" | "ping" | "beacon" | "xml_dtd" | "font"
+                      | "media" | "websocket" | "csp_report" | "imageset" | "web_manifest"
+                      | "other";
+
+    type RequestFilter = {
+        urls: string[],
+        types?: ResourceType[],
+        tabId?: number,
+        windowId?: number,
+    };
+
+    type HttpHeaders = ({ name: string, binaryValue: number[], value?: string }
+                        | { name: string, value: string, binaryValue?: number[] })[];
+
+    type BlockingResponse = {
+        cancel?: boolean,
+        redirectUrl?: string,
+        requestHeaders?: HttpHeaders,
+        responseHeaders?: HttpHeaders,
+        // unsupported: authCredentials?: { username: string, password: string },
+    };
+
+    type UploadData = {
+        bytes?: ArrayBuffer,
+        file?: string,
+    };
+
+    const MAX_HANDLER_BEHAVIOR_CHANGED_CALLS_PER_10_MINUTES: number;
+
+    function handlerBehaviorChanged(): Promise<void>;
+
+    // TODO: Enforce the return result of the addListener call in the contract
+    interface ReqListener<T, U> {
+        addListener: (
+            callback: (arg: T) => void,
+            filter: RequestFilter,
+            extraInfoSpec?: Array<U>,
+        ) => BlockingResponse|Promise<BlockingResponse>;
+        removeListener: (callback: (arg: T) => void) => void;
+        hasListener: (callback: (arg: T) => void) => boolean;
+    }
+
+    const onBeforeRequest: ReqListener<{
+        requestId: string,
+        url: string,
+        method: string,
+        frameId: number,
+        parentFrameId: number,
+        requestBody?: {
+            error?: string,
+            formData?: { [key: string]: string[] },
+            raw?: UploadData[],
+        },
+        tabId: number,
+        type: ResourceType,
+        timeStamp: number,
+        originUrl: string,
+    }, "blocking"|"requestBody">;
+
+    const onBeforeSendHeaders: ReqListener<{
+        requestId: string,
+        url: string,
+        method: string,
+        frameId: number,
+        parentFrameId: number,
+        tabId: number,
+        type: ResourceType,
+        timeStamp: number,
+        originUrl: string,
+        requestHeaders?: HttpHeaders,
+    }, "blocking"|"requestHeaders">;
+
+    // TODO: finish that API
+}
+
+declare namespace browser.windows {
+    type WindowType = "normal" | "popup" | "panel" | "devtools";
+
+    type WindowState = "normal" | "minimized" | "maximized" | "fullscreen" | "docked";
+
+    type Window = {
+        id?: number,
+        focused: boolean,
+        top?: number,
+        left?: number,
+        width?: number,
+        height?: number,
+        tabs?: browser.tabs.Tab[],
+        incognito: boolean,
+        type?: WindowType,
+        state?: WindowState,
+        alwaysOnTop: boolean,
+        sessionId?: string,
+    };
+
+    type CreateType = "normal" | "popup" | "panel" | "detached_panel";
+
+    const WINDOW_ID_NONE: number;
+
+    const INDOW_ID_CURRENT: number;
+
+    function get(windowId: number, getInfo?: {
+        populate?: boolean,
+        windowTypes?: WindowType[],
+    }): Promise<browser.windows.Window>;
+
+    function getCurrent(getInfo?: {
+        populate?: boolean,
+        windowTypes?: WindowType[],
+    }): Promise<browser.windows.Window>;
+
+    function getLastFocused(getInfo?: {
+        populate?: boolean,
+        windowTypes?: WindowType[],
+    }): Promise<browser.windows.Window>;
+
+    function getAll(getInfo?: {
+        populate?: boolean,
+        windowTypes?: WindowType[],
+    }): Promise<browser.windows.Window[]>;
+
+    // TODO: url and tabId should be exclusive
+    function create(createData?: {
+        url?: string|string[],
+        tabId?: number,
+        left?: number,
+        top?: number,
+        width?: number,
+        height?: number,
+        // unsupported: focused?: boolean,
+        incognito?: boolean,
+        type?: CreateType,
+        state?: WindowState,
+    }): Promise<browser.windows.Window>;
+
+    function update(windowId: number, updateInfo: {
+        left?: number,
+        top?: number,
+        width?: number,
+        height?: number,
+        focused?: boolean,
+        drawAttention?: boolean,
+        state?: WindowState,
+    }): Promise<browser.windows.Window>;
+
+    function remove(windowId: number): Promise<void>;
+
+    const onCreated: Listener<browser.windows.Window>;
+
+    const onRemoved: Listener<number>;
+
+    const onFocusChanged: Listener<number>;
 }
