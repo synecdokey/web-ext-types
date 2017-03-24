@@ -464,7 +464,7 @@ declare namespace browser.extension {
     const inIncognitoContext: boolean;
 
     function getURL(path: string): string;
-    function getViews(fetchProperties?: { type: ViewType, windowId: number }): Window[];
+    function getViews(fetchProperties?: { type?: ViewType, windowId?: number }): Window[];
     function getBackgroundPage(): Window;
     function isAllowedIncognitoAccess(): Promise<boolean>;
     function isAllowedFileSchemeAccess(): Promise<boolean>;
