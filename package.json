@@ -1,11 +1,11 @@
 {
     "name": "web-ext-types",
     "author": "Michael Zapata <michael.zapata@scality.com> (https://github.com/michael-zapata)",
-    "version": "0.1.1",
+    "version": "0.2.0",
     "description": "TypeScript type definitions for WebExtensions",
     "keywords": ["firefox", "typescript", "webextension"],
     "repository": "michael-zapata/web-ext-types",
-    "license": "GPL-3.0",
+    "license": "MPL-2.0",
     "devDependencies": {
         "tslint": "4.5.1",
         "typescript": "2.2.1"
