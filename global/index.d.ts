@@ -753,6 +753,30 @@ declare namespace browser.runtime {
     const onMessage: EvListener<onMessageEvent>;
 }
 
+declare namespace browser.sidebarAction {
+    type ImageDataType = ImageData;
+
+    function setPanel(details: { panel: string, tabId?: number }): void;
+
+    function getPanel(details: { tabId?: number }): Promise<string>;
+
+    function setTitle(details: { title: string, tabId?: number }): void;
+
+    function getTitle(details: { tabId?: number }): Promise<string>;
+
+    type IconViaPath = {
+        path: string | { [index: number]: string },
+        tabId?: number,
+    };
+
+    type IconViaImageData = {
+        imageData: ImageDataType | { [index: number]: ImageDataType },
+        tabId?: number,
+    };
+
+    function setIcon(details: IconViaPath | IconViaImageData): Promise<void>;
+}
+
 declare namespace browser.storage {
     type StorageArea = {
         get: (keys: string|string[]|object|null) => Promise<object>,
