@@ -27,6 +27,7 @@ Almost everything is implemented:
 - `omnibox`
 - `pageAction`
 - `runtime`
+- `sidebarAction`
 - `storage`
 - `tabs`
 - `topSites`
