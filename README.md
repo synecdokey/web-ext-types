@@ -5,36 +5,6 @@
 
 TypeScript type definitions for WebExtensions
 
-Almost everything is implemented:
-- `alarms`
-- `bookmarks`
-- `browserAction`
-- `browsingData`
-- `commands`
-- `contextMenus`
-- `contextualIdentities`
-- `cookies`
-- `downloads`
-- `events`
-- `extension`
-- `extensionTypes`
-- `history`
-- `i18n`
-- `identity`
-- `idle`
-- `management`
-- `notifications`
-- `omnibox`
-- `pageAction`
-- `runtime`
-- `sidebarAction`
-- `storage`
-- `tabs`
-- `topSites`
-- `webNavigation`
-- `webRequest`, partly
-- `windows`
-
 ## Requirements
 
 As this library is using the `object` type, `typescript` should at least be on
@@ -74,6 +44,11 @@ option.
   }
 }
 ```
+
+## Completion status
+
+The API is fully implemented aside from `browser.webRequest`, which is still in
+progress. This is based on MDN's documentation.
 
 [build-badge]: https://travis-ci.org/michael-zapata/web-ext-types.svg?branch=master
 [build-url]: https://travis-ci.org/michael-zapata/web-ext-types
