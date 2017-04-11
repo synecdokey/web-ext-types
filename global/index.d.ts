@@ -182,6 +182,7 @@ declare namespace browser.contextMenus {
 
     type OnClickData = {
         menuItemId: number|string,
+        modifiers: string[],
         editable: boolean,
         parentMenuItemId?: number|string,
         mediaType?: string,
