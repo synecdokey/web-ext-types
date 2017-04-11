@@ -470,9 +470,9 @@ declare namespace browser.extensionTypes {
         allFrames?: boolean,
         code?: string,
         file?: string,
-        frameId: number,
-        // unsupported: matchAboutBlank: boolean,
-        runAt: RunAt,
+        frameId?: number,
+        // unsupported: matchAboutBlank?: boolean,
+        runAt?: RunAt,
     };
 }
 
