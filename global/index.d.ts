@@ -1063,6 +1063,7 @@ declare namespace browser.webRequest {
     function handlerBehaviorChanged(): Promise<void>;
 
     // TODO: Enforce the return result of the addListener call in the contract
+    //       Use an intersection type for all the default properties
     interface ReqListener<T, U> {
         addListener: (
             callback: (arg: T) => void,
@@ -1103,7 +1104,118 @@ declare namespace browser.webRequest {
         requestHeaders?: HttpHeaders,
     }, "blocking"|"requestHeaders">;
 
-    // TODO: finish that API
+    const onSendHeaders: ReqListener<{
+        requestId: string,
+        url: string,
+        method: string,
+        frameId: number,
+        parentFrameId: number,
+        tabId: number,
+        type: ResourceType,
+        timeStamp: number,
+        originUrl: string,
+        requestHeaders?: HttpHeaders,
+    }, "requestHeaders">;
+
+    const onHeadersReceived: ReqListener<{
+        requestId: string,
+        url: string,
+        method: string,
+        frameId: number,
+        parentFrameId: number,
+        tabId: number,
+        type: ResourceType,
+        timeStamp: number,
+        originUrl: string,
+        statusLine: string,
+        responseHeaders?: HttpHeaders,
+        statusCode: number,
+    }, "blocking"|"responseHeaders">;
+
+    const onAuthRequired: ReqListener<{
+        requestId: string,
+        url: string,
+        method: string,
+        frameId: number,
+        parentFrameId: number,
+        tabId: number,
+        type: ResourceType,
+        timeStamp: number,
+        scheme: string,
+        realm?: string,
+        challenger: { host: string, port: number },
+        isProxy: boolean,
+        responseHeaders?: HttpHeaders,
+        statusLine: string,
+        statusCode: number,
+    }, "blocking"|"responseHeaders">;
+
+    const onResponseStarted: ReqListener<{
+        requestId: string,
+        url: string,
+        method: string,
+        frameId: number,
+        parentFrameId: number,
+        tabId: number,
+        type: ResourceType,
+        timeStamp: number,
+        originUrl: string,
+        ip?: string,
+        fromCache: boolean,
+        statusLine: string,
+        responseHeaders?: HttpHeaders,
+        statusCode: number,
+    }, "responseHeaders">;
+
+    const onBeforeRedirect: ReqListener<{
+        requestId: string,
+        url: string,
+        method: string,
+        frameId: number,
+        parentFrameId: number,
+        tabId: number,
+        type: ResourceType,
+        timeStamp: number,
+        originUrl: string,
+        ip?: string,
+        fromCache: boolean,
+        statusCode: number,
+        redirectUrl: string,
+        statusLine: string,
+        responseHeaders?: HttpHeaders,
+    }, "responseHeaders">;
+
+    const onCompleted: ReqListener<{
+        requestId: string,
+        url: string,
+        method: string,
+        frameId: number,
+        parentFrameId: number,
+        tabId: number,
+        type: ResourceType,
+        timeStamp: number,
+        originUrl: string,
+        ip?: string,
+        fromCache: boolean,
+        statusCode: number,
+        statusLine: string,
+        responseHeaders?: HttpHeaders,
+    }, "responseHeaders">;
+
+    const onErrorOccurred: ReqListener<{
+        requestId: string,
+        url: string,
+        method: string,
+        frameId: number,
+        parentFrameId: number,
+        tabId: number,
+        type: ResourceType,
+        timeStamp: number,
+        originUrl: string,
+        ip?: string,
+        fromCache: boolean,
+        error: string,
+    }, void>;
 }
 
 declare namespace browser.windows {
