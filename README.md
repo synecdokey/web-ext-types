@@ -3,7 +3,7 @@
 [![Build Status][build-badge]][build-url]
 [![Npm Version][npm-badge]][npm-url]
 
-TypeScript type definitions for WebExtensions
+TypeScript type definitions for WebExtensions, based on MDN's documentation.
 
 ## Requirements
 
@@ -44,11 +44,6 @@ option.
   }
 }
 ```
-
-## Completion status
-
-The API is fully implemented aside from `browser.webRequest`, which is still in
-progress. This is based on MDN's documentation.
 
 [build-badge]: https://travis-ci.org/michael-zapata/web-ext-types.svg?branch=master
 [build-url]: https://travis-ci.org/michael-zapata/web-ext-types
