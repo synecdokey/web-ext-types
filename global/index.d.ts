@@ -1018,6 +1018,16 @@ declare namespace browser.webNavigation {
 
     const onCommited: TransitionNavListener;
 
+    const onCreatedNavigationTarget: NavListener<{
+        sourceFrameId: number,
+        // Unsupported: sourceProcessId: number,
+        sourceTabId: number,
+        tabId: number,
+        timeStamp: number,
+        url: string,
+        windowId: number,
+    }>;
+
     const onDOMContentLoaded: DefaultNavListener;
 
     const onCompleted: DefaultNavListener;
