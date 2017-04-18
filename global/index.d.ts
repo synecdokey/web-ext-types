@@ -298,6 +298,21 @@ declare namespace browser.cookies {
     const onChanged: Listener<{ removed: boolean, cookie: Cookie, cause: OnChangedCause }>;
 }
 
+declare namespace browser.devtools.inspectedWindow {
+    const tabId: number;
+
+    function eval(expression: string): Promise<[
+        any,
+        { isException: boolean, value: string } | { isError: boolean, code: string }
+    ]>;
+
+    function reload(reloadOptions?: {
+        ignoreCache?: boolean,
+        userAgent?: string,
+        injectedScript?: string,
+    }): void;
+}
+
 declare namespace browser.downloads {
     type FilenameConflictAction = "uniquify" | "overwrite" | "prompt";
 
