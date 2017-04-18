@@ -732,11 +732,11 @@ declare namespace browser.runtime {
     // const onSuspend: Listener<void>;
     // const onSuspendCanceled: Listener<void>;
     // const onBrowserUpdateAvailable: Listener<void>;
-    // const onConnectExternal: Listener<Port>;
-    // const onMessageExternal: Listener<any>;
     // const onRestartRequired: Listener<OnRestartRequiredReason>;
     const onUpdateAvailable: Listener<{ version: string }>;
     const onConnect: Listener<Port>;
+
+    const onConnectExternal: Listener<Port>;
 
     type onMessagePromise = (
         message: object,
@@ -752,6 +752,8 @@ declare namespace browser.runtime {
 
     type onMessageEvent = onMessagePromise | onMessageBool;
     const onMessage: EvListener<onMessageEvent>;
+
+    const onMessageExternal: EvListener<onMessageEvent>;
 }
 
 declare namespace browser.sidebarAction {
