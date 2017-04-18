@@ -298,6 +298,34 @@ declare namespace browser.cookies {
     const onChanged: Listener<{ removed: boolean, cookie: Cookie, cause: OnChangedCause }>;
 }
 
+declare namespace browser.devtools.inspectedWindow {
+    const tabId: number;
+
+    function eval(expression: string): Promise<[
+        any,
+        { isException: boolean, value: string } | { isError: boolean, code: string }
+    ]>;
+
+    function reload(reloadOptions?: {
+        ignoreCache?: boolean,
+        userAgent?: string,
+        injectedScript?: string,
+    }): void;
+}
+
+declare namespace browser.devtools.network {
+    const onNavigated: Listener<string>;
+}
+
+declare namespace browser.devtools.panels {
+    type ExtensionPanel = {
+        onShown: Listener<Window>,
+        onHidden: Listener<void>,
+    };
+
+    function create(title: string, iconPath: string, pagePath: string): Promise<ExtensionPanel>;
+}
+
 declare namespace browser.downloads {
     type FilenameConflictAction = "uniquify" | "overwrite" | "prompt";
 
@@ -732,11 +760,11 @@ declare namespace browser.runtime {
     // const onSuspend: Listener<void>;
     // const onSuspendCanceled: Listener<void>;
     // const onBrowserUpdateAvailable: Listener<void>;
-    // const onConnectExternal: Listener<Port>;
-    // const onMessageExternal: Listener<any>;
     // const onRestartRequired: Listener<OnRestartRequiredReason>;
     const onUpdateAvailable: Listener<{ version: string }>;
     const onConnect: Listener<Port>;
+
+    const onConnectExternal: Listener<Port>;
 
     type onMessagePromise = (
         message: object,
@@ -752,6 +780,8 @@ declare namespace browser.runtime {
 
     type onMessageEvent = onMessagePromise | onMessageBool;
     const onMessage: EvListener<onMessageEvent>;
+
+    const onMessageExternal: EvListener<onMessageEvent>;
 }
 
 declare namespace browser.sidebarAction {
@@ -1017,6 +1047,16 @@ declare namespace browser.webNavigation {
     }>;
 
     const onCommited: TransitionNavListener;
+
+    const onCreatedNavigationTarget: NavListener<{
+        sourceFrameId: number,
+        // Unsupported: sourceProcessId: number,
+        sourceTabId: number,
+        tabId: number,
+        timeStamp: number,
+        url: string,
+        windowId: number,
+    }>;
 
     const onDOMContentLoaded: DefaultNavListener;
 
