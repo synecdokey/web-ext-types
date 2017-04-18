@@ -317,6 +317,15 @@ declare namespace browser.devtools.network {
     const onNavigated: Listener<string>;
 }
 
+declare namespace browser.devtools.panels {
+    type ExtensionPanel = {
+        onShown: Listener<Window>,
+        onHidden: Listener<void>,
+    };
+
+    function create(title: string, iconPath: string, pagePath: string): Promise<ExtensionPanel>;
+}
+
 declare namespace browser.downloads {
     type FilenameConflictAction = "uniquify" | "overwrite" | "prompt";
 
