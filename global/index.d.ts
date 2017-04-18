@@ -313,6 +313,10 @@ declare namespace browser.devtools.inspectedWindow {
     }): void;
 }
 
+declare namespace browser.devtools.network {
+    const onNavigated: Listener<string>;
+}
+
 declare namespace browser.downloads {
     type FilenameConflictAction = "uniquify" | "overwrite" | "prompt";
 
