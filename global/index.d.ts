@@ -199,6 +199,7 @@ declare namespace browser.contextMenus {
 
     function create(createProperties: {
         type?: ItemType,
+        id?: string,
         title?: string,
         checked?: boolean,
         contexts?: ContextType[],
