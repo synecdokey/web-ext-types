@@ -175,7 +175,7 @@ declare namespace browser.commands {
 }
 
 declare namespace browser.contextMenus {
-    type ContextType = "all" | "page" | "frame" | "page" | "link" | "editable" | "image"
+    type ContextType = "all" | "page" | "frame" | "page" | "link" | "editable" | "image" | "selection"
         | "video" | "audio" | "launcher" | "browser_action" | "page_action" | "password" | "tab";
 
     type ItemType = "normal" | "checkbox" | "radio" | "separator";
@@ -208,7 +208,7 @@ declare namespace browser.contextMenus {
         documentUrlPatterns?: string[],
         targetUrlPatterns?: string[],
         enabled?: boolean,
-    }, callback: () => void): number|string;
+    }, callback?: () => void): number|string;
     function update(id: number|string, updateProperties: {
         type?: ItemType,
         title?: string,
