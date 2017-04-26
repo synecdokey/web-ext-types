@@ -810,8 +810,12 @@ declare namespace browser.sidebarAction {
 }
 
 declare namespace browser.storage {
+    type StorageResults = {
+        [key: string]: any
+    }
+
     type StorageArea = {
-        get: (keys: string|string[]|object|null) => Promise<object>,
+        get: (keys: string|string[]|object|null) => Promise<StorageResults>,
         // unsupported: getBytesInUse: (keys: string|string[]|null) => Promise<number>,
         set: (keys: object) => Promise<void>,
         remove: (keys: string|string[]) => Promise<void>,
