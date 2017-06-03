@@ -932,7 +932,7 @@ declare namespace browser.tabs {
         windowType?: WindowType,
     }): Promise<Tab[]>;
     function reload(tabId: number, reloadProperties: { bypassCache: boolean }): Promise<void>;
-    function remove(tabIds: Tab|Tab[]): Promise<void>;
+    function remove(tabIds: number|number[]): Promise<void>;
     function sendMessage(tabId: number, message: any, options?: { frameId?: number }): Promise<object|void>;
     // deprecated: function sendRequest(): x;
     function setZoom(tabId: number|undefined, zoomFactor: number): Promise<void>;
