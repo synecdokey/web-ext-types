@@ -732,11 +732,24 @@ declare namespace browser.runtime {
         connectInfo?: { name?: string, includeTlsChannelId?: boolean }
     ): Port;
     function connectNative(application: string): Port;
+
     function sendMessage(
-        extensionId: string|null,
-        message: any,
-        options?: { includeTlsChannelId?: boolean }
+        message: any
     ): Promise<any>;
+    function sendMessage(
+        message: any,
+        options: { includeTlsChannelId?: boolean, toProxyScript?: boolean }
+    ): Promise<any>;
+    function sendMessage(
+        extensionId: string,
+        message: any,
+    ): Promise<any>;
+    function sendMessage(
+        extensionId: string,
+        message: any,
+        options?: { includeTlsChannelId?: boolean, toProxyScript?: boolean }
+    ): Promise<any>;
+
     function sendNativeMessage(
         application: string,
         message: object
