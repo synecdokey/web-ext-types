@@ -202,6 +202,7 @@ declare namespace browser.contextMenus {
         id?: string,
         title?: string,
         checked?: boolean,
+        command?: "_execute_browser_action" | "_execute_page_action" | "_excute_sidebar_action",
         contexts?: ContextType[],
         onclick?: (info: OnClickData, tab: browser.tabs.Tab) => void,
         parentId?: number|string,
