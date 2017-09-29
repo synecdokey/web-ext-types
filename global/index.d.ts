@@ -793,7 +793,13 @@ declare namespace browser.runtime {
         sendResponse: (response: object) => Promise<void>
     ) => boolean;
 
-    type onMessageEvent = onMessagePromise | onMessageBool;
+    type onMessageVoid = (
+        message: object,
+        sender: MessageSender,
+        sendResponse: (response: object) => Promise<void>
+    ) => void;
+
+    type onMessageEvent = onMessagePromise | onMessageBool | onMessageVoid;
     const onMessage: EvListener<onMessageEvent>;
 
     const onMessageExternal: EvListener<onMessageEvent>;
