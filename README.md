@@ -4,8 +4,6 @@
 [![Npm Version][npm-badge]][npm-url]
 
 TypeScript type definitions for WebExtensions, based on MDN's documentation.
-The library is unmaintained as of today (13/07/2017) as I do not wish to invest
-any of my free-time in a browser that traded its users privacy for convenience.
 
 ## Requirements
 
