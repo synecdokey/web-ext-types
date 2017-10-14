@@ -866,14 +866,17 @@ declare namespace browser.tabs {
     };
     type Tab = {
         active: boolean,
-        highlighted: boolean,
         audible?: boolean,
+        autoDiscardable?: boolean,
         cookieStoreId?: string,
+        discarded?: boolean,
         favIconUrl?: string,
         height?: number,
+        highlighted: boolean,
         id?: number,
         incognito: boolean,
         index: number,
+        lastAccessed: number,
         mutedInfo?: MutedInfo,
         // not supported: openerTabId?: number,
         pinned: boolean,
@@ -938,8 +941,10 @@ declare namespace browser.tabs {
     function query(queryInfo: {
         active?: boolean,
         audible?: boolean,
+        // unsupported: autoDiscardable?: boolean,
         cookieStoreId?: string,
         currentWindow?: boolean,
+        discarded?: boolean,
         highlighted?: boolean,
         index?: number,
         muted?: boolean,
@@ -959,6 +964,7 @@ declare namespace browser.tabs {
     function setZoomSettings(tabId: number|undefined, zoomSettings: ZoomSettings): Promise<void>;
     function update(tabId: number|undefined, updateProperties: {
         active?: boolean,
+        // unsupported: autoDiscardable?: boolean,
         // unsupported: highlighted?: boolean,
         muted?: boolean,
         openerTabId?: number,
