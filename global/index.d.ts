@@ -836,7 +836,7 @@ declare namespace browser.storage {
 
     interface Get {
         (keys: string|string[]|null): Promise<StorageResults>;
-        <T>(keys: T): Promise<T>;
+        <T extends object>(keys: T): Promise<{[K in keyof T]: T[K]}>;
     }
 
     type StorageArea = {
