@@ -830,19 +830,52 @@ declare namespace browser.sidebarAction {
 }
 
 declare namespace browser.storage {
-    type StorageResults = {
-        [key: string]: any
+
+    // Non-firefox implementations don't accept all these types
+    type StorageValue = 
+        string |
+        number |
+        boolean |
+        null |
+        undefined |
+        RegExp |
+        ArrayBuffer |
+        Uint8ClampedArray |
+        Uint8Array |
+        Uint16Array |
+        Uint32Array |
+        Int8Array |
+        Int16Array |
+        Int32Array |
+        Float32Array |
+        Float64Array |
+        DataView |
+        StorageObject |
+        StorageArray |
+        StorageMap |
+        StorageSet;
+
+    // The Index signature makes casting to/from classes or interfaces a pain.
+    // Custom types are OK.
+    interface StorageObject {
+        [key: string]: StorageValue;
     }
+    // These have to be interfaces rather than types to avoid a circular
+    // definition of StorageValue
+    interface StorageArray extends Array<StorageValue> {}
+    interface StorageMap extends Map<StorageValue,StorageValue> {}
+    interface StorageSet extends Set<StorageValue> {}
 
     interface Get {
-        (keys: string|string[]|null): Promise<StorageResults>;
-        <T extends object>(keys: T): Promise<{[K in keyof T]: T[K]}>;
+        (keys: string|string[]|null): Promise<StorageObject>;
+        /* <T extends StorageObject>(keys: T): Promise<{[K in keyof T]: T[K]}>; */
+        <T extends StorageObject>(keys: T): Promise<T>;
     }
 
     type StorageArea = {
         get: Get,
         // unsupported: getBytesInUse: (keys: string|string[]|null) => Promise<number>,
-        set: (keys: object) => Promise<void>,
+        set: (keys: StorageObject) => Promise<void>,
         remove: (keys: string|string[]) => Promise<void>,
         clear: () => Promise<void>,
     };
