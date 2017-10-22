@@ -814,9 +814,11 @@ declare namespace browser.sessions{
         window: browser.windows.Window
     }
 
+    const MAX_SESSION_RESULTS: number
+
     function getRecentlyClosed(filter?: Filter): Promise<Session[]>
 
-    function restore(sessionId: number): Promise<Session>
+    function restore(sessionId: string): Promise<Session>
 
     function setTabValue(tabId: number, key: string, value: string|object): Promise<void>
 
