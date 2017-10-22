@@ -805,6 +805,35 @@ declare namespace browser.runtime {
     const onMessageExternal: EvListener<onMessageEvent>;
 }
 
+declare namespace browser.sessions{
+    type Filter = { maxResults?: number }
+
+    type Session = {
+        lastModified: number,
+        tab: browser.tabs.Tab,
+        window: browser.windows.Window
+    }
+
+    function getRecentlyClosed(filter?: Filter): Promise<Session[]>
+
+    function restore(sessionId: number): Promise<Session>
+
+    function setTabValue(tabId: number, key: string, value: string|object): Promise<void>
+
+    function getTabValue(tabId: number, key: string): Promise<void|string|object>
+
+    function removeTabValue(tabId: number, key: string): Promise<void>
+
+    function setWindowValue(windowId: number, key: string, value: string|object): Promise<void>
+
+    function getWindowValue(windowId: number, key: string): Promise<void|string|object>
+
+    function removeWindowValue(windowId: number, key: string): Promise<void>
+
+    const onChanged: EvListener<()=>void>
+
+}
+
 declare namespace browser.sidebarAction {
     type ImageDataType = ImageData;
 
