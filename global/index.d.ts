@@ -502,7 +502,7 @@ declare namespace browser.extensionTypes {
         code?: string,
         file?: string,
         frameId?: number,
-        // unsupported: matchAboutBlank?: boolean,
+        matchAboutBlank?: boolean,
         runAt?: RunAt,
     };
 }
