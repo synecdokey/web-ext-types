@@ -505,6 +505,15 @@ declare namespace browser.extensionTypes {
         matchAboutBlank?: boolean,
         runAt?: RunAt,
     };
+    type InjectCssDetails = {
+        allFrames?: boolean,
+        code?: string,
+        cssOrigin?: string,
+        file?: string,
+        frameId?: number,
+        matchAboutBlank?: boolean,
+        runAt?: RunAt,
+    };
 }
 
 declare namespace browser.history {
@@ -1001,7 +1010,7 @@ declare namespace browser.tabs {
     //     windowId?: number,
     //     tabs: number[]|number,
     // }): Promise<browser.windows.Window>;
-    function insertCSS(tabId: number|undefined, details: browser.extensionTypes.InjectDetails): Promise<void>;
+    function insertCSS(tabId: number|undefined, details: browser.extensionTypes.InjectCssDetails): Promise<void>;
     function removeCSS(tabId: number|undefined, details: browser.extensionTypes.InjectDetails): Promise<void>;
     function move(tabIds: number|number[], moveProperties: {
         windowId?: number,
