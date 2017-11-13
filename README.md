@@ -26,10 +26,10 @@ Though if you want to use the git version, simply do:
 
 ```sh
 # yarn version
-yarn add michael-zapata/web-ext-types --dev
+yarn add kelseasy/web-ext-types --dev
 
 # npm version
-npm install --save-dev michael-zapata/web-ext-types
+npm install --save-dev kelseasy/web-ext-types
 ```
 
 As this is not a [`DefinitelyTyped`][definitely-typed] package, you will have to
@@ -40,13 +40,13 @@ option.
 {
   "compilerOptions": {
     // You have to explicitly set @types to get DefinitelyTyped type definitions
-    "typeRoots": ["@types", "node_modules/web-ext-types"],
+    "typeRoots": ["node_modules/@types", "node_modules/web-ext-types"],
   }
 }
 ```
 
-[build-badge]: https://travis-ci.org/michael-zapata/web-ext-types.svg?branch=master
-[build-url]: https://travis-ci.org/michael-zapata/web-ext-types
+[build-badge]: https://travis-ci.org/kelseasy/web-ext-types.svg?branch=master
+[build-url]: https://travis-ci.org/kelseasy/web-ext-types
 [definitely-typed]: https://github.com/DefinitelyTyped/DefinitelyTyped/
 [npm-badge]: https://img.shields.io/npm/v/web-ext-types.svg
 [npm-url]: https://www.npmjs.com/package/web-ext-types
