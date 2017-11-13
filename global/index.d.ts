@@ -882,10 +882,10 @@ declare namespace browser.storage {
         Float32Array |
         Float64Array |
         DataView |
-        StorageObject |
         StorageArray |
         StorageMap |
-        StorageSet;
+        StorageSet |
+        StorageObject;
 
     // The Index signature makes casting to/from classes or interfaces a pain.
     // Custom types are OK.
