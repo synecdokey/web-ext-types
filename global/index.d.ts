@@ -1437,3 +1437,49 @@ declare namespace browser.windows {
 
     const onFocusChanged: Listener<number>;
 }
+
+declare namespace browser.theme {
+
+    type Theme = {
+        images: ThemeImages,
+        colors: ThemeColors,
+        properties?: ThemeProperties,
+    };
+
+    type ThemeImages = {
+        headerURL: string,
+        theme_frame?: string,
+        additional_backgrounds?: string[],
+    };
+
+    type ThemeColors = {
+        accentcolor: string,
+        textcolor: string,
+        frame?: [number, number, number],
+        tab_text?: [number, number, number],
+        toolbar?: string,
+        toolbar_text?: string,
+        toolbar_field?: string,
+        toolbar_field_text?: string,
+    };
+
+    type ThemeProperties = {
+        additional_backgrounds_alignment: Alignment[],
+        additional_backgrounds_tiling: Tiling[],
+    }
+
+    type Alignment =
+        | 'bottom' | 'center' | 'left' | 'right' | 'top'
+        | 'center bottom' | 'center center' | 'center top'
+        | 'left bottom' | 'left center' | 'left top'
+        | 'right bottom' | 'right center' | 'right top';
+
+    type Tiling = 'no-repeat' | 'repeat' | 'repeat-x' | 'repeat-y';
+
+    function getCurrent(): Promise<Theme>;
+    function getCurrent(windowId: number): Promise<Theme>;
+    function update(theme: Theme);
+    function update(windowId: number, theme: Theme);
+    function reset();
+    function reset(windowId: number);
+}
