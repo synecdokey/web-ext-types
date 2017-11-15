@@ -1478,8 +1478,8 @@ declare namespace browser.theme {
 
     function getCurrent(): Promise<Theme>;
     function getCurrent(windowId: number): Promise<Theme>;
-    function update(theme: Theme): void;
-    function update(windowId: number, theme: Theme): void;
-    function reset(): void;
-    function reset(windowId: number): void;
+    function update(theme: Theme): Promise<void>;
+    function update(windowId: number, theme: Theme): Promise<void>;
+    function reset(): Promise<void>;
+    function reset(windowId: number): Promise<void>;
 }
