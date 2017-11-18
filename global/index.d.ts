@@ -976,7 +976,7 @@ declare namespace browser.tabs {
         active?: boolean,
         cookieStoreId?: string,
         index?: number,
-        // unsupported: openerTabId: number,
+        openerTabId: number,
         pinned?: boolean,
         // deprecated: selected: boolean,
         url?: string,
