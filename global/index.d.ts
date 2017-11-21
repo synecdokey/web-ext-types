@@ -1147,7 +1147,7 @@ declare namespace browser.webNavigation {
         timeStamp: number,
     }>;
 
-    const onCommited: TransitionNavListener;
+    const onCommitted: TransitionNavListener;
 
     const onCreatedNavigationTarget: NavListener<{
         sourceFrameId: number,
