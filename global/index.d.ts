@@ -934,6 +934,8 @@ declare namespace browser.tabs {
         extensionId?: string,
         reason: MutedInfoReason,
     };
+    // TODO: Specify PageSettings properly.
+    type PageSettings = object;
     type Tab = {
         active: boolean,
         audible?: boolean,
@@ -946,9 +948,11 @@ declare namespace browser.tabs {
         id?: number,
         incognito: boolean,
         index: number,
+        isArticle: boolean,
+        isInReaderMode: boolean,
         lastAccessed: number,
         mutedInfo?: MutedInfo,
-        // not supported: openerTabId?: number,
+        openerTabId?: number,
         pinned: boolean,
         selected: boolean,
         sessionId?: string,
@@ -976,7 +980,7 @@ declare namespace browser.tabs {
         active?: boolean,
         cookieStoreId?: string,
         index?: number,
-        // unsupported: openerTabId: number,
+        openerTabId?: number,
         pinned?: boolean,
         // deprecated: selected: boolean,
         url?: string,
@@ -1008,6 +1012,8 @@ declare namespace browser.tabs {
         windowId?: number,
         index: number,
     }): Promise<Tab|Tab[]>;
+    function print(): Promise<void>;
+    function printPreview(): Promise<void>;
     function query(queryInfo: {
         active?: boolean,
         audible?: boolean,
@@ -1028,6 +1034,13 @@ declare namespace browser.tabs {
     }): Promise<Tab[]>;
     function reload(tabId: number, reloadProperties: { bypassCache: boolean }): Promise<void>;
     function remove(tabIds: number|number[]): Promise<void>;
+    function saveAsPDF(pageSettings: PageSettings): Promise<
+        'saved' |
+        'replaced' |
+        'canceled' |
+        'not_saved' |
+        'not_replaced'
+    >;
     function sendMessage(tabId: number, message: any, options?: { frameId?: number }): Promise<object|void>;
     // deprecated: function sendRequest(): x;
     function setZoom(tabId: number|undefined, zoomFactor: number): Promise<void>;
@@ -1036,6 +1049,7 @@ declare namespace browser.tabs {
         active?: boolean,
         // unsupported: autoDiscardable?: boolean,
         // unsupported: highlighted?: boolean,
+        loadReplace?: boolean,
         muted?: boolean,
         openerTabId?: number,
         pinned?: boolean,
@@ -1064,14 +1078,15 @@ declare namespace browser.tabs {
         isWindowClosing: boolean,
     }) => void>;
     const onReplaced: EvListener<(addedTabId: number, removedTabId: number) => void>;
-    const onUpdated: EvListener<(tabId: number, updateInfo: {
-        status?: string,
-        url?: string,
-        pinned?: boolean,
+    const onUpdated: EvListener<(tabId: number, changeInfo: {
         audible?: boolean,
-        mutedInfo?: MutedInfo,
+        discarded?: boolean,
         favIconUrl?: string,
+        mutedInfo?: MutedInfo,
+        pinned?: boolean,
+        status?: string,
         title?: string,
+        url?: string,
     }, tab: Tab) => void>;
     const onZoomChanged: Listener<{
         tabId: number,
