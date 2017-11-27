@@ -1032,7 +1032,7 @@ declare namespace browser.tabs {
         windowId?: number,
         windowType?: WindowType,
     }): Promise<Tab[]>;
-    function reload(tabId: number, reloadProperties: { bypassCache: boolean }): Promise<void>;
+    function reload(tabId?: number, reloadProperties?: { bypassCache?: boolean }): Promise<void>;
     function remove(tabIds: number|number[]): Promise<void>;
     function saveAsPDF(pageSettings: PageSettings): Promise<
         'saved' |
