@@ -116,6 +116,7 @@ declare namespace browser.browserAction {
     function setIcon(details: IconViaPath | IconViaImageData): Promise<void>;
     function setPopup(details: { popup: string, tabId?: number }): void;
     function getPopup(details: { tabId?: number }): Promise<string>;
+    function openPopup(): Promise<string>;
     function setBadgeText(details: { text: string, tabId?: number }): void;
     function getBadgeText(details: { tabId?: number }): Promise<string>;
     function setBadgeBackgroundColor(details: { color: string|ColorArray, tabId?: number }): void;
