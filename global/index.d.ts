@@ -59,8 +59,8 @@ declare namespace browser.bookmarks {
     function get(idOrIdList: string|string[]): Promise<BookmarkTreeNode[]>;
     function getChildren(id: string): Promise<BookmarkTreeNode[]>;
     function getRecent(numberOfItems: number): Promise<BookmarkTreeNode[]>;
-    function getSubTree(id: string): Promise<[BookmarkTreeNode]>;
-    function getTree(id: string): Promise<[BookmarkTreeNode]>;
+    function getSubTree(id: string, callback?: (nodes: [BookmarkTreeNode]|undefined) => void): Promise<[BookmarkTreeNode]>;
+    function getTree(callback?: (nodes: [BookmarkTreeNode]|undefined) => void): Promise<[BookmarkTreeNode]>;
 
     type Destination = {
         parentId: string,
