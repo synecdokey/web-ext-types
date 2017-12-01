@@ -116,7 +116,7 @@ declare namespace browser.browserAction {
     function setIcon(details: IconViaPath | IconViaImageData): Promise<void>;
     function setPopup(details: { popup: string, tabId?: number }): void;
     function getPopup(details: { tabId?: number }): Promise<string>;
-    function openPopup(): Promise<string>;
+    function openPopup(): Promise<void>;
     function setBadgeText(details: { text: string, tabId?: number }): void;
     function getBadgeText(details: { tabId?: number }): Promise<string>;
     function setBadgeBackgroundColor(details: { color: string|ColorArray, tabId?: number }): void;
@@ -1199,6 +1199,22 @@ declare namespace browser.webRequest {
         windowId?: number,
     };
 
+    type StreamFilter = {
+        onstart: (event: any) => void;
+        ondata: (event: { data: ArrayBuffer }) => void;
+        onstop: (event: any) => void;
+        onerror: (event: any) => void;
+
+        close(): void;
+        disconnect(): void;
+        resume(): void;
+        suspend(): void;
+        write(data: Uint8Array | ArrayBuffer): void;
+
+        error: string;
+        status: "uninitialized" | "transferringdata" | "finishedtransferringdata" | "suspended" | "closed" | "disconnected" | "failed";
+    }
+
     type HttpHeaders = ({ name: string, binaryValue: number[], value?: string }
                         | { name: string, value: string, binaryValue?: number[] })[];
 
@@ -1373,6 +1389,8 @@ declare namespace browser.webRequest {
         fromCache: boolean,
         error: string,
     }, void>;
+
+    function filterResponseData(requestId: string): StreamFilter;
 }
 
 declare namespace browser.windows {
