@@ -60,7 +60,7 @@ declare namespace browser.bookmarks {
     function getChildren(id: string): Promise<BookmarkTreeNode[]>;
     function getRecent(numberOfItems: number): Promise<BookmarkTreeNode[]>;
     function getSubTree(id: string): Promise<[BookmarkTreeNode]>;
-    function getTree(id: string): Promise<[BookmarkTreeNode]>;
+    function getTree(): Promise<[BookmarkTreeNode]>;
 
     type Destination = {
         parentId: string,
