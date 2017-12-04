@@ -864,7 +864,7 @@ declare namespace browser.sidebarAction {
 declare namespace browser.storage {
 
     // Non-firefox implementations don't accept all these types
-    type StorageValue = 
+    type StorageValue =
         string |
         number |
         boolean |
