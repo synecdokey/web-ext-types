@@ -36,6 +36,7 @@ declare namespace browser.alarms {
 
 declare namespace browser.bookmarks {
     type BookmarkTreeNodeUnmodifiable = "managed";
+    type BookmarkTreeNodeType = "bookmark"|"folder"|"separator";
     type BookmarkTreeNode = {
         id: string,
         parentId?: string,
@@ -46,6 +47,7 @@ declare namespace browser.bookmarks {
         dateGroupModified?: number,
         unmodifiable?: BookmarkTreeNodeUnmodifiable,
         children?: BookmarkTreeNode[],
+        type?: BookmarkTreeNodeType,
     };
 
     type CreateDetails = {
@@ -859,6 +861,10 @@ declare namespace browser.sidebarAction {
     };
 
     function setIcon(details: IconViaPath | IconViaImageData): Promise<void>;
+
+    function open(): void;
+
+    function close(): void;
 }
 
 declare namespace browser.storage {
