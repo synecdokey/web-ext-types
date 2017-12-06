@@ -737,22 +737,22 @@ declare namespace browser.runtime {
     ): Port;
     function connectNative(application: string): Port;
 
-    function sendMessage(
-        message: any
-    ): Promise<any>;
-    function sendMessage(
-        message: any,
+    function sendMessage<T = any, U = any>(
+        message: T
+    ): Promise<U>;
+    function sendMessage<T = any, U = any>(
+        message: T,
         options: { includeTlsChannelId?: boolean, toProxyScript?: boolean }
-    ): Promise<any>;
-    function sendMessage(
+    ): Promise<U>;
+    function sendMessage<T = any, U = any>(
         extensionId: string,
-        message: any,
-    ): Promise<any>;
-    function sendMessage(
+        message: T,
+    ): Promise<U>;
+    function sendMessage<T = any, U = any>(
         extensionId: string,
-        message: any,
+        message: T,
         options?: { includeTlsChannelId?: boolean, toProxyScript?: boolean }
-    ): Promise<any>;
+    ): Promise<U>;
 
     function sendNativeMessage(
         application: string,
@@ -870,7 +870,7 @@ declare namespace browser.sidebarAction {
 declare namespace browser.storage {
 
     // Non-firefox implementations don't accept all these types
-    type StorageValue = 
+    type StorageValue =
         string |
         number |
         boolean |
@@ -905,7 +905,7 @@ declare namespace browser.storage {
     interface StorageSet extends Set<StorageValue> {}
 
     interface Get {
-        (keys: string|string[]|null): Promise<StorageObject>;
+        (keys?: string|string[]|null): Promise<StorageObject>;
         /* <T extends StorageObject>(keys: T): Promise<{[K in keyof T]: T[K]}>; */
         <T extends StorageObject>(keys: T): Promise<T>;
     }
@@ -1047,7 +1047,7 @@ declare namespace browser.tabs {
         'not_saved' |
         'not_replaced'
     >;
-    function sendMessage(tabId: number, message: any, options?: { frameId?: number }): Promise<object|void>;
+    function sendMessage<T = any, U = object>(tabId: number, message: T, options?: { frameId?: number }): Promise<U|void>;
     // deprecated: function sendRequest(): x;
     function setZoom(tabId: number|undefined, zoomFactor: number): Promise<void>;
     function setZoomSettings(tabId: number|undefined, zoomSettings: ZoomSettings): Promise<void>;

@@ -7,8 +7,8 @@ TypeScript type definitions for WebExtensions, based on MDN's documentation.
 
 ## Requirements
 
-As this library is using the `object` type, `typescript` should at least be on
-version `2.2` to get the definitions to work.
+As this library is using the `object` type and default values for generics,
+`typescript` should at least be on version `2.3` to get the definitions to work.
 
 ## Install it
 
