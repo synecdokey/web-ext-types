@@ -862,9 +862,9 @@ declare namespace browser.sidebarAction {
 
     function setIcon(details: IconViaPath | IconViaImageData): Promise<void>;
 
-    function open(): void;
+    function open(): Promise<void>;
 
-    function close(): void;
+    function close(): Promise<void>;
 }
 
 declare namespace browser.storage {
