@@ -864,7 +864,7 @@ declare namespace browser.sidebarAction {
 declare namespace browser.storage {
 
     // Non-firefox implementations don't accept all these types
-    type StorageValue = 
+    type StorageValue =
         string |
         number |
         boolean |
@@ -899,7 +899,7 @@ declare namespace browser.storage {
     interface StorageSet extends Set<StorageValue> {}
 
     interface Get {
-        (keys: string|string[]|null): Promise<StorageObject>;
+        (keys?: string|string[]|null): Promise<StorageObject>;
         /* <T extends StorageObject>(keys: T): Promise<{[K in keyof T]: T[K]}>; */
         <T extends StorageObject>(keys: T): Promise<T>;
     }
