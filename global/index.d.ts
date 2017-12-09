@@ -680,6 +680,34 @@ declare namespace browser.pageAction {
     const onClicked: Listener<browser.tabs.Tab>;
 }
 
+declare namespace browser.permissions {
+    type Permission = "activeTab" | "alarms" |
+        "bookmarks" | "browsingData" | "browserSettings" |
+        "contextMenus" | "contextualIdentities" | "cookies" |
+        "downloads" | "downloads.open" |
+        "find" | "geolocation" | "history" |
+        "identity" | "idle" |
+        "management" | "menus" |
+        "nativeMessaging" | "notifications" |
+        "pkcs11" | "privacy" | "proxy" |
+        "sessions" | "storage" |
+        "tabs" | "theme" | "topSites" |
+        "webNavigation" | "webRequest" | "webRequestBlocking";
+
+    type Permissions = {
+        origins?: string[],
+        permissions?: Permission[]
+    };
+
+    function contains(permissions: Permissions): Promise<boolean>;
+
+    function getAll(): Promise<Permissions>;
+
+    function remove(permissions: Permissions): Promise<boolean>;
+
+    function request(permissions: Permissions): Promise<boolean>;
+}
+
 declare namespace browser.runtime {
     const lastError: string | null;
     const id: string;
