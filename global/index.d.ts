@@ -706,6 +706,9 @@ declare namespace browser.permissions {
     function remove(permissions: Permissions): Promise<boolean>;
 
     function request(permissions: Permissions): Promise<boolean>;
+
+    const onAdded: Listener<Permissions>;
+    const onRemoved: Listener<Permissions>;
 }
 
 declare namespace browser.runtime {
