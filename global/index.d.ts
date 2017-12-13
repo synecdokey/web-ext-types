@@ -707,8 +707,9 @@ declare namespace browser.permissions {
 
     function request(permissions: Permissions): Promise<boolean>;
 
-    const onAdded: Listener<Permissions>;
-    const onRemoved: Listener<Permissions>;
+    // Not yet support in Edge and Firefox:
+    // const onAdded: Listener<Permissions>;
+    // const onRemoved: Listener<Permissions>;
 }
 
 declare namespace browser.runtime {
