@@ -1163,7 +1163,7 @@ declare namespace browser.webNavigation {
         frameId: number,
         parentFrameId: number,
         url: string,
-    }>;
+    }[]>;
 
     interface NavListener<T> {
         addListener: (callback: (arg: T) => void, filter?: {
