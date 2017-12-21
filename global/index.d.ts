@@ -1252,9 +1252,23 @@ declare namespace browser.webRequest {
         file?: string,
     };
 
+    interface StreamFilter {
+        // First four are for the user to override.
+        onstart: Function;
+        ondata: Function;
+        onstop: Function;
+        onerror: Function;
+        write: (data: ArrayBuffer | Uint8Array) => void;
+        disconnect: () => void;
+        close: () => void;
+        suspend: () => void;
+        resume: () => void;
+    }
+
     const MAX_HANDLER_BEHAVIOR_CHANGED_CALLS_PER_10_MINUTES: number;
 
     function handlerBehaviorChanged(): Promise<void>;
+    function filterResponseData(requestId: string): StreamFilter;
 
     // TODO: Enforce the return result of the addListener call in the contract
     //       Use an intersection type for all the default properties
