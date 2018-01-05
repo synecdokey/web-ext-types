@@ -36,6 +36,7 @@ declare namespace browser.alarms {
 
 declare namespace browser.bookmarks {
     type BookmarkTreeNodeUnmodifiable = "managed";
+    type BookmarkTreeNodeType = "bookmark"|"folder"|"separator";
     type BookmarkTreeNode = {
         id: string,
         parentId?: string,
@@ -46,6 +47,7 @@ declare namespace browser.bookmarks {
         dateGroupModified?: number,
         unmodifiable?: BookmarkTreeNodeUnmodifiable,
         children?: BookmarkTreeNode[],
+        type?: BookmarkTreeNodeType,
     };
 
     type CreateDetails = {
@@ -60,7 +62,7 @@ declare namespace browser.bookmarks {
     function getChildren(id: string): Promise<BookmarkTreeNode[]>;
     function getRecent(numberOfItems: number): Promise<BookmarkTreeNode[]>;
     function getSubTree(id: string): Promise<[BookmarkTreeNode]>;
-    function getTree(id: string): Promise<[BookmarkTreeNode]>;
+    function getTree(): Promise<[BookmarkTreeNode]>;
 
     type Destination = {
         parentId: string,
@@ -679,6 +681,38 @@ declare namespace browser.pageAction {
     const onClicked: Listener<browser.tabs.Tab>;
 }
 
+declare namespace browser.permissions {
+    type Permission = "activeTab" | "alarms" |
+        "bookmarks" | "browsingData" | "browserSettings" |
+        "contextMenus" | "contextualIdentities" | "cookies" |
+        "downloads" | "downloads.open" |
+        "find" | "geolocation" | "history" |
+        "identity" | "idle" |
+        "management" | "menus" |
+        "nativeMessaging" | "notifications" |
+        "pkcs11" | "privacy" | "proxy" |
+        "sessions" | "storage" |
+        "tabs" | "theme" | "topSites" |
+        "webNavigation" | "webRequest" | "webRequestBlocking";
+
+    type Permissions = {
+        origins?: string[],
+        permissions?: Permission[]
+    };
+
+    function contains(permissions: Permissions): Promise<boolean>;
+
+    function getAll(): Promise<Permissions>;
+
+    function remove(permissions: Permissions): Promise<boolean>;
+
+    function request(permissions: Permissions): Promise<boolean>;
+
+    // Not yet support in Edge and Firefox:
+    // const onAdded: Listener<Permissions>;
+    // const onRemoved: Listener<Permissions>;
+}
+
 declare namespace browser.runtime {
     const lastError: string | null;
     const id: string;
@@ -736,22 +770,22 @@ declare namespace browser.runtime {
     ): Port;
     function connectNative(application: string): Port;
 
-    function sendMessage(
-        message: any
-    ): Promise<any>;
-    function sendMessage(
-        message: any,
+    function sendMessage<T = any, U = any>(
+        message: T
+    ): Promise<U>;
+    function sendMessage<T = any, U = any>(
+        message: T,
         options: { includeTlsChannelId?: boolean, toProxyScript?: boolean }
-    ): Promise<any>;
-    function sendMessage(
+    ): Promise<U>;
+    function sendMessage<T = any, U = any>(
         extensionId: string,
-        message: any,
-    ): Promise<any>;
-    function sendMessage(
+        message: T,
+    ): Promise<U>;
+    function sendMessage<T = any, U = any>(
         extensionId: string,
-        message: any,
+        message: T,
         options?: { includeTlsChannelId?: boolean, toProxyScript?: boolean }
-    ): Promise<any>;
+    ): Promise<U>;
 
     function sendNativeMessage(
         application: string,
@@ -860,12 +894,16 @@ declare namespace browser.sidebarAction {
     };
 
     function setIcon(details: IconViaPath | IconViaImageData): Promise<void>;
+
+    function open(): Promise<void>;
+
+    function close(): Promise<void>;
 }
 
 declare namespace browser.storage {
 
     // Non-firefox implementations don't accept all these types
-    type StorageValue = 
+    type StorageValue =
         string |
         number |
         boolean |
@@ -900,7 +938,7 @@ declare namespace browser.storage {
     interface StorageSet extends Set<StorageValue> {}
 
     interface Get {
-        (keys: string|string[]|null): Promise<StorageObject>;
+        (keys?: string|string[]|null): Promise<StorageObject>;
         /* <T extends StorageObject>(keys: T): Promise<{[K in keyof T]: T[K]}>; */
         <T extends StorageObject>(keys: T): Promise<T>;
     }
@@ -1042,7 +1080,7 @@ declare namespace browser.tabs {
         'not_saved' |
         'not_replaced'
     >;
-    function sendMessage(tabId: number, message: any, options?: { frameId?: number }): Promise<object|void>;
+    function sendMessage<T = any, U = object>(tabId: number, message: T, options?: { frameId?: number }): Promise<U|void>;
     // deprecated: function sendRequest(): x;
     function setZoom(tabId: number|undefined, zoomFactor: number): Promise<void>;
     function setZoomSettings(tabId: number|undefined, zoomSettings: ZoomSettings): Promise<void>;
@@ -1126,7 +1164,7 @@ declare namespace browser.webNavigation {
         frameId: number,
         parentFrameId: number,
         url: string,
-    }>;
+    }[]>;
 
     interface NavListener<T> {
         addListener: (callback: (arg: T) => void, filter?: {
