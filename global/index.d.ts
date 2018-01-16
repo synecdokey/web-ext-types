@@ -682,18 +682,42 @@ declare namespace browser.pageAction {
 }
 
 declare namespace browser.permissions {
-    type Permission = "activeTab" | "alarms" |
-        "bookmarks" | "browsingData" | "browserSettings" |
-        "contextMenus" | "contextualIdentities" | "cookies" |
-        "downloads" | "downloads.open" |
-        "find" | "geolocation" | "history" |
-        "identity" | "idle" |
-        "management" | "menus" |
-        "nativeMessaging" | "notifications" |
-        "pkcs11" | "privacy" | "proxy" |
-        "sessions" | "storage" |
-        "tabs" | "theme" | "topSites" |
-        "webNavigation" | "webRequest" | "webRequestBlocking";
+    type Permission = (
+        'activeTab' |
+        'alarms' |
+        'background' |
+        'bookmarks' |
+        'browsingData' |
+        'browserSettings' |
+        'clipboardRead' |
+        'clipboardWrite' |
+        'contextMenus' |
+        'contextualIdentities' |
+        'cookies' |
+        'downloads' |
+        'downloads.open' |
+        'find' |
+        'geolocation' |
+        'history' |
+        'identity' |
+        'idle' |
+        'management' |
+        'menus' |
+        'nativeMessaging' |
+        'notifications' |
+        'pkcs11' |
+        'privacy' |
+        'proxy' |
+        'sessions' |
+        'storage' |
+        'tabs' |
+        'theme' |
+        'topSites' |
+        'unlimitedStorage' |
+        'webNavigation' |
+        'webRequest' |
+        'webRequestBlocking'
+    );
 
     type Permissions = {
         origins?: string[],
@@ -754,11 +778,246 @@ declare namespace browser.runtime {
     type OnInstalledReason = "install" | "update" | "chrome_update" | "shared_module_update";
     type OnRestartRequiredReason = "app_update" | "os_update" | "periodic";
 
+    type FirefoxSpecificProperties = {
+        id?: string,
+        strict_min_version?: string,
+        strict_max_version?: string,
+        update_url?: string,
+    };
+    
+    type IconPath = { [urlName: string]: string } | string;
+    
+    type Manifest = {
+        // Required
+        manifest_version: 2,
+        name: string,
+        version: string,
+        /** Required in Microsoft Edge */
+        author?: string,
+        
+        // Optional
+
+        // ManifestBase
+        description?: string,
+        homepage_url?: string,
+        short_name?: string,
+        
+        // WebExtensionManifest
+        background?: {
+            page: string,
+            script: string[],
+            persistent?: boolean,
+        },
+        content_scripts?: {
+            matches: string[],
+            exclude_matches?: string[],
+            include_globs?: string[],
+            exclude_globs?: string[],
+            css?: string[],
+            js?: string[],
+            all_frames?: boolean,
+            match_about_blank?: boolean,
+            run_at?: 'document_start' | 'document_end' | 'document_idle',
+        }[],
+        content_security_policy?: string,
+        developer?: {
+            name?: string,
+            url?: string,
+        },
+        icons?: {
+            [imgSize: string]: string
+        },
+        incognito?: 'spanning' | 'split' | 'not_allowed',
+        optional_permissions?: browser.permissions.Permission[],
+        options_ui?: {
+            page: string,
+            browser_style?: boolean,
+            chrome_style?: boolean,
+            open_in_tab?: boolean,
+        },
+        permissions?: browser.permissions.Permission[],
+        web_accessible_resources?: string[],
+        
+        // WebExtensionLangpackManifest
+        languages: {
+            [langCode: string]: {
+                chrome_resources: {
+                    [resName: string]: string | { [urlName: string]: string }
+                },
+                version: string,
+            }
+        },
+        langpack_id?: string,
+        sources?: {
+            [srcName: string]: {
+                base_path: string,
+                paths?: string[],
+            }
+        },
+        
+        // Extracted from components
+        browser_action?: {
+            default_title?: string,
+            default_icon?: IconPath,
+            theme_icons?: {
+                light: string,
+                dark: string,
+                size: number,
+            }[],
+            default_popup?: string,
+            browser_style?: boolean,
+            default_area?: 'navbar' | 'menupanel' | 'tabstrip' | 'personaltoolbar',
+        },
+        commands?: {
+            [keyName: string]: {
+                suggested_key?: {
+                    default?: string,
+                    mac?: string,
+                    linux?: string,
+                    windows?: string,
+                    chromeos?: string,
+                    android?: string,
+                    ios?: string,
+                },
+                description?: string,
+            }
+        },
+        default_locale?: browser.i18n.LanguageCode,
+        devtools_page?: string,
+        omnibox?: {
+            keyword: string,
+        },
+        page_action?: {
+            default_title?: string,
+            default_icon?: IconPath,
+            default_popup?: string,
+            browser_style?: boolean,
+            show_matches?: string[],
+            hide_matches?: string[],
+        },
+        sidebar_action?: {
+            default_panel: string,
+            default_title?: string,
+            default_icon?: IconPath,
+            browser_style?: boolean,
+        },
+        
+        // Firefox specific
+        applications?: {
+            gecko?: FirefoxSpecificProperties,
+        }
+        browser_specific_settings?: {
+            gecko?: FirefoxSpecificProperties,
+        }
+        experiment_apis?: any,
+        protocol_handlers?: {
+            name: string,
+            protocol: string,
+            uriTemplate: string,
+        },
+        
+        // Opera specific
+        minimum_opera_version?: string,
+        
+        // Chrome specific
+        action?: any,
+        automation?: any,
+        background_page?: any,
+        chrome_settings_overrides?: {
+            homepage?: string,
+            search_provider?: {
+                name: string,
+                search_url: string,
+                keyword?: string,
+                favicon_url?: string,
+                suggest_url?: string,
+                instant_url?: string,
+                is_default?: string,
+                image_url?: string,
+                search_url_post_params?: string,
+                instant_url_post_params?: string,
+                image_url_post_params?: string,
+                alternate_urls?: string[],
+                prepopulated_id?: number,
+            }
+        },
+        chrome_ui_overrides?: {
+            bookmarks_ui?: {
+                remove_bookmark_shortcut?: true,
+                remove_button?: true
+            }
+        },
+        chrome_url_overrides?: {
+            newtab?: string,
+            bookmarks?: string,
+            history?: string,
+        },
+        content_capabilities?: any,
+        converted_from_user_script?: any,
+        current_locale?: any,
+        declarative_net_request?: any,
+        event_rules?: any[],
+        export?: {
+            whitelist?: string[],
+        },
+        externally_connectable?: {
+            ids?: string[],
+            matches?: string[],
+            accepts_tls_channel_id ?: boolean,
+        },
+        file_browser_handlers?: {
+            id: string,
+            default_title: string,
+            file_filters: string[],
+        }[],
+        file_system_provider_capabilities?: {
+            source: 'file' | 'device' | 'network',
+            configurable?: boolean,
+            multiple_mounts?: boolean,
+            watchable ?: boolean,
+        },
+        import?: {
+            id: string,
+            minimum_version?: string,
+        }[],
+        input_components?: any,
+        key?: string,
+        minimum_chrome_version?: string,
+        nacl_modules?: {
+            path: string,
+            mime_type: string,
+        }[],
+        oauth2?: any,
+        offline_enabled?: boolean,
+        options_page?: string,
+        platforms?: any,
+        requirements?: any,
+        sandbox?: {
+            pages: string[],
+            content_security_policy?: string,
+        }[],
+        signature?: any,
+        spellcheck?: any,
+        storage?: {
+          managed_schema: string,
+        },
+        system_indicator?: any,
+        tts_engine?: {
+            voice: {
+                voice_name: string,
+                lang?: string,
+                gender?: 'male' | 'female',
+                event_types: ('start' | 'word' | 'sentence' | 'marker' | 'end' | 'error')[],
+            }[],
+        },
+        update_url?: string,
+        version_name?: string,
+    };
+
     function getBackgroundPage(): Promise<Window>;
     function openOptionsPage(): Promise<void>;
+    function getManifest(): Manifest;
 
-    // TODO: Explicitly expose every property of the manifest
-    function getManifest(): object;
     function getURL(path: string): string;
     function setUninstallURL(url: string): Promise<void>;
     function reload(): void;
