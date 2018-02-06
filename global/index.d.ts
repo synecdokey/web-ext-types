@@ -1455,7 +1455,7 @@ declare namespace browser.windows {
 
     const WINDOW_ID_NONE: number;
 
-    const INDOW_ID_CURRENT: number;
+    const WINDOW_ID_CURRENT: number;
 
     function get(windowId: number, getInfo?: {
         populate?: boolean,
