@@ -18,5 +18,6 @@
         "lint": "tslint --project tsconfig.json",
         "prepublish": "tsc",
         "test": "tslint --project tsconfig.json && tsc"
-    }
+    },
+    "types": "global/index.d.ts"
 }
