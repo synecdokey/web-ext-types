@@ -1,6 +1,6 @@
 {
     "name": "web-ext-types",
-    "author": "Michael Zapata <michael.zapata@scality.com> (https://github.com/michael-zapata)",
+    "author": "Kelsey Zapata <key@kelseasy.org> (https://kelseyz.org)",
     "version": "1.1.2",
     "description": "TypeScript type definitions for WebExtensions",
     "keywords": [
