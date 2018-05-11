@@ -747,11 +747,11 @@ declare namespace browser.runtime {
         error: object,
         onDisconnect: {
             addListener(cb: (port: Port) => void): void,
-            removeListener(): void,
+            removeListener(cb: (port: Port) => void): void,
         },
         onMessage: {
             addListener(cb: (message: object) => void): void,
-            removeListener(): void,
+            removeListener(cb: (message: object) => void): void,
         },
         postMessage(message: object): void,
         sender?: runtime.MessageSender,
