@@ -303,6 +303,26 @@ declare namespace browser.cookies {
     const onChanged: Listener<{ removed: boolean, cookie: Cookie, cause: OnChangedCause }>;
 }
 
+declare namespace browser.contentScripts {
+	type RegisteredContentScriptOptions = {
+		allFrames?: boolean,
+		css?: ({ file: string }|{ code: string })[],
+		excludeGlobs?: string[],
+		excludeMatches?: string[],
+		includeGlobs?: string[],
+		js?: ({ file: string }|{ code: string })[],
+		matchAboutBlank?: boolean,
+		matches: string[],
+		runAt?: 'document_start' | 'document_end' | 'document_idle',
+	};
+	
+	type RegisteredContentScript = {
+		unregister: () => void;
+	};
+	
+	function register(contentScriptOptions: RegisteredContentScriptOptions): Promise<RegisteredContentScript>;
+}
+
 declare namespace browser.devtools.inspectedWindow {
     const tabId: number;
 
