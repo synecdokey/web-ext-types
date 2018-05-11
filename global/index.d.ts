@@ -103,25 +103,20 @@ declare namespace browser.browserAction {
     type ColorArray = [number, number, number, number];
     type ImageDataType = ImageData;
 
-    function setTitle(details: { title: string, tabId?: number }): void;
+    function setTitle(details: { title: string|null, tabId?: number }): void;
     function getTitle(details: { tabId?: number }): Promise<string>;
 
-    type IconViaPath = {
-        path: string | object,
-        tabId?: number,
-    };
-
-    type IconViaImageData = {
-        imageData: ImageDataType,
-        tabId?: number,
-    };
-    function setIcon(details: IconViaPath | IconViaImageData): Promise<void>;
-    function setPopup(details: { popup: string, tabId?: number }): void;
+    function setIcon(details: {
+        imageData?: ImageDataType|{}|null|undefined,
+        path?: string|{}|null|undefined,
+        tabId?: number
+    }): Promise<void>;
+    function setPopup(details: { popup: string|null, tabId?: number }): void;
     function getPopup(details: { tabId?: number }): Promise<string>;
     function openPopup(): Promise<void>;
-    function setBadgeText(details: { text: string, tabId?: number }): void;
+    function setBadgeText(details: { text: string|null, tabId?: number }): void;
     function getBadgeText(details: { tabId?: number }): Promise<string>;
-    function setBadgeBackgroundColor(details: { color: string|ColorArray, tabId?: number }): void;
+    function setBadgeBackgroundColor(details: { color: string|ColorArray|null, tabId?: number }): void;
     function getBadgeBackgroundColor(details: { tabId?: number }): Promise<ColorArray>;
     function enable(tabId?: number): void;
     function disable(tabId?: number): void;
