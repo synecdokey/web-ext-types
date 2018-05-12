@@ -103,25 +103,20 @@ declare namespace browser.browserAction {
     type ColorArray = [number, number, number, number];
     type ImageDataType = ImageData;
 
-    function setTitle(details: { title: string, tabId?: number }): void;
+    function setTitle(details: { title: string|null, tabId?: number }): void;
     function getTitle(details: { tabId?: number }): Promise<string>;
 
-    type IconViaPath = {
-        path: string | object,
-        tabId?: number,
-    };
-
-    type IconViaImageData = {
-        imageData: ImageDataType,
-        tabId?: number,
-    };
-    function setIcon(details: IconViaPath | IconViaImageData): Promise<void>;
-    function setPopup(details: { popup: string, tabId?: number }): void;
+    function setIcon(details: {
+        imageData?: ImageDataType|{}|null|undefined,
+        path?: string|{}|null|undefined,
+        tabId?: number
+    }): Promise<void>;
+    function setPopup(details: { popup: string|null, tabId?: number }): void;
     function getPopup(details: { tabId?: number }): Promise<string>;
     function openPopup(): Promise<void>;
-    function setBadgeText(details: { text: string, tabId?: number }): void;
+    function setBadgeText(details: { text: string|null, tabId?: number }): void;
     function getBadgeText(details: { tabId?: number }): Promise<string>;
-    function setBadgeBackgroundColor(details: { color: string|ColorArray, tabId?: number }): void;
+    function setBadgeBackgroundColor(details: { color: string|ColorArray|null, tabId?: number }): void;
     function getBadgeBackgroundColor(details: { tabId?: number }): Promise<ColorArray>;
     function enable(tabId?: number): void;
     function disable(tabId?: number): void;
@@ -301,6 +296,26 @@ declare namespace browser.cookies {
     function getAllCookieStores(): Promise<CookieStore[]>;
 
     const onChanged: Listener<{ removed: boolean, cookie: Cookie, cause: OnChangedCause }>;
+}
+
+declare namespace browser.contentScripts {
+	type RegisteredContentScriptOptions = {
+		allFrames?: boolean,
+		css?: ({ file: string }|{ code: string })[],
+		excludeGlobs?: string[],
+		excludeMatches?: string[],
+		includeGlobs?: string[],
+		js?: ({ file: string }|{ code: string })[],
+		matchAboutBlank?: boolean,
+		matches: string[],
+		runAt?: 'document_start' | 'document_end' | 'document_idle',
+	};
+	
+	type RegisteredContentScript = {
+		unregister: () => void;
+	};
+	
+	function register(contentScriptOptions: RegisteredContentScriptOptions): Promise<RegisteredContentScript>;
 }
 
 declare namespace browser.devtools.inspectedWindow {
@@ -747,11 +762,11 @@ declare namespace browser.runtime {
         error: object,
         onDisconnect: {
             addListener(cb: (port: Port) => void): void,
-            removeListener(): void,
+            removeListener(cb: (port: Port) => void): void,
         },
         onMessage: {
             addListener(cb: (message: object) => void): void,
-            removeListener(): void,
+            removeListener(cb: (message: object) => void): void,
         },
         postMessage(message: object): void,
         sender?: runtime.MessageSender,
