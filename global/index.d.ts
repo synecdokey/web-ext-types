@@ -133,11 +133,25 @@ declare namespace browser.browserAction {
   function setTitle(details: { title: string | null; tabId?: number }): void;
   function getTitle(details: { tabId?: number }): Promise<string>;
 
-  function setIcon(details: {
-    imageData?: ImageDataType | {} | null | undefined;
-    path?: string | {} | null | undefined;
+  type IconViaPath = {
+    path: string | { [size: number]: string };
     tabId?: number;
-  }): Promise<void>;
+  };
+
+  type IconViaImageData = {
+    imageData: ImageDataType | { [size: number]: ImageDataType };
+    tabId?: number;
+  };
+
+  type IconReset = {
+    imageData?: {} | null;
+    path?: {} | null;
+    tabId?: number;
+  };
+
+  function setIcon(
+    details: IconViaPath | IconViaImageData | IconReset
+  ): Promise<void>;
   function setPopup(details: { popup: string | null; tabId?: number }): void;
   function getPopup(details: { tabId?: number }): Promise<string>;
   function openPopup(): Promise<void>;
