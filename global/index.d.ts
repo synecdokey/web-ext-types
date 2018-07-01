@@ -54,6 +54,7 @@ declare namespace browser.bookmarks {
     parentId?: string;
     index?: number;
     title?: string;
+    type?: BookmarkTreeNodeType;
     url?: string;
   };
 
