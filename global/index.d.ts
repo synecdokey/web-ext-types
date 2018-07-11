@@ -2070,6 +2070,7 @@ declare namespace browser.windows {
 
   // TODO: url and tabId should be exclusive
   function create(createData?: {
+    allowScriptsToClose?:boolean;
     url?: string | string[];
     tabId?: number;
     left?: number;
@@ -2078,6 +2079,7 @@ declare namespace browser.windows {
     height?: number;
     // unsupported: focused?: boolean,
     incognito?: boolean;
+    titlePreface?:string;
     type?: CreateType;
     state?: WindowState;
   }): Promise<browser.windows.Window>;
