@@ -1575,6 +1575,9 @@ declare namespace browser.tabs {
     tabId: number | undefined,
     zoomSettings: ZoomSettings
   ): Promise<void>;
+  function toggleReaderMode(
+    tabId?:number
+  ):Promise<void>;
   function update(
     tabId: number | undefined,
     updateProperties: {
