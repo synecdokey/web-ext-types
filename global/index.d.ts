@@ -1820,7 +1820,7 @@ declare namespace browser.webRequest {
     redirectUrl?: string;
     requestHeaders?: HttpHeaders;
     responseHeaders?: HttpHeaders;
-    // unsupported: authCredentials?: { username: string, password: string },
+    authCredentials?: { username: string, password: string };
   };
 
   type UploadData = {
