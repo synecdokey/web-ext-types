@@ -1498,6 +1498,7 @@ declare namespace browser.tabs {
     url?: string;
     windowId?: number;
   }): Promise<Tab>;
+  function captureTab(tabId: number): Promise<string>;
   function captureVisibleTab(
     windowId?: number,
     options?: browser.extensionTypes.ImageDetails
