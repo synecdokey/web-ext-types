@@ -815,6 +815,7 @@ declare namespace browser.notifications {
     id: string | null,
     options: NotificationOptions
   ): Promise<string>;
+  function create(options: NotificationOptions): Promise<string>;
 
   function clear(id: string): Promise<boolean>;
 
