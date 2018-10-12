@@ -1591,7 +1591,7 @@ declare namespace browser.tabs {
       active?: boolean;
       // unsupported: autoDiscardable?: boolean,
       // unsupported: highlighted?: boolean,
-      hidden?: boolean;
+      // unsupported: hidden?: boolean;
       loadReplace?: boolean;
       muted?: boolean;
       openerTabId?: number;
