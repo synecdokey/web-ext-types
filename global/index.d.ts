@@ -1454,6 +1454,7 @@ declare namespace browser.tabs {
     discarded?: boolean;
     favIconUrl?: string;
     height?: number;
+    hidden: boolean;
     highlighted: boolean;
     id?: number;
     incognito: boolean;
@@ -1547,6 +1548,7 @@ declare namespace browser.tabs {
     cookieStoreId?: string;
     currentWindow?: boolean;
     discarded?: boolean;
+    hidden?: boolean;
     highlighted?: boolean;
     index?: number;
     muted?: boolean;
@@ -1589,6 +1591,7 @@ declare namespace browser.tabs {
       active?: boolean;
       // unsupported: autoDiscardable?: boolean,
       // unsupported: highlighted?: boolean,
+      hidden?: boolean;
       loadReplace?: boolean;
       muted?: boolean;
       openerTabId?: number;
