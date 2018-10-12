@@ -1520,6 +1520,7 @@ declare namespace browser.tabs {
   // deprecated: function getSelected(windowId?: number): Promise<browser.tabs.Tab>;
   function getZoom(tabId?: number): Promise<number>;
   function getZoomSettings(tabId?: number): Promise<ZoomSettings>;
+  function hide(tabIds: number | number[]): Promise<number[]>;
   // unsupported: function highlight(highlightInfo: {
   //     windowId?: number,
   //     tabs: number[]|number,
@@ -1582,6 +1583,7 @@ declare namespace browser.tabs {
     tabId: number | undefined,
     zoomSettings: ZoomSettings
   ): Promise<void>;
+  function show(tabIds: number | number[]): Promise<void>;
   function toggleReaderMode(
     tabId?:number
   ):Promise<void>;
