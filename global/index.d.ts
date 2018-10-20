@@ -225,20 +225,21 @@ declare namespace browser.commands {
 declare namespace browser.contextMenus {
   type ContextType =
     | "all"
-    | "page"
-    | "frame"
-    | "page"
-    | "link"
-    | "editable"
-    | "image"
-    | "selection"
-    | "video"
     | "audio"
-    | "launcher"
+    | "bookmarks"
     | "browser_action"
+    | "editable"
+    | "frame"
+    | "image"
+    // | "launcher" unsupported
+    | "link"
+    | "page"
     | "page_action"
     | "password"
-    | "tab";
+    | "selection"
+    | "tab"
+    | "tools_menu"
+    | "video";
 
   type ItemType = "normal" | "checkbox" | "radio" | "separator";
 
