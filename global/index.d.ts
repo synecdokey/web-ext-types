@@ -317,6 +317,10 @@ declare namespace browser.contextMenus {
   const onClicked: EvListener<
     (info: OnClickData, tab: browser.tabs.Tab) => void
   >;
+
+  const onHidden: EvListener<() => void>;
+
+  const onShown: EvListener<(info: OnClickData, tab: browser.tabs.Tab) => void>;
 }
 
 declare namespace browser.contextualIdentities {
