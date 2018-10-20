@@ -286,6 +286,14 @@ declare namespace browser.contextMenus {
     callback?: () => void
   ): number | string;
 
+  function getTargetElement(targetElementId: number): object | null;
+
+  function refresh(): Promise<void>;
+
+  function remove(menuItemId: number | string): Promise<void>;
+
+  function removeAll(): Promise<void>;
+
   function update(
     id: number | string,
     updateProperties: {
@@ -300,8 +308,6 @@ declare namespace browser.contextMenus {
       enabled?: boolean;
     }
   ): Promise<void>;
-  function remove(menuItemId: number | string): Promise<void>;
-  function removeAll(): Promise<void>;
 
   const onClicked: EvListener<
     (info: OnClickData, tab: browser.tabs.Tab) => void
