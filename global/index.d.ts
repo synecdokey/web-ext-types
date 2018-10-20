@@ -297,15 +297,20 @@ declare namespace browser.contextMenus {
   function update(
     id: number | string,
     updateProperties: {
-      type?: ItemType;
-      title?: string;
       checked?: boolean;
+      command?:
+        | "_execute_browser_action"
+        | "_execute_page_action"
+        | "_execute_sidebar_action";
       contexts?: ContextType[];
+      documentUrlPatterns?: string[];
+      enabled?: boolean;
       onclick?: (info: OnClickData, tab: browser.tabs.Tab) => void;
       parentId?: number | string;
-      documentUrlPatterns?: string[];
       targetUrlPatterns?: string[];
-      enabled?: boolean;
+      title?: string;
+      type?: ItemType;
+      visible?: boolean;
     }
   ): Promise<void>;
 
