@@ -266,23 +266,26 @@ declare namespace browser.contextMenus {
 
   function create(
     createProperties: {
-      type?: ItemType;
-      id?: string;
-      title?: string;
       checked?: boolean;
       command?:
         | "_execute_browser_action"
         | "_execute_page_action"
         | "_execute_sidebar_action";
       contexts?: ContextType[];
+      documentUrlPatterns?: string[];
+      enabled?: boolean;
+      icons?: object;
+      id?: string;
       onclick?: (info: OnClickData, tab: browser.tabs.Tab) => void;
       parentId?: number | string;
-      documentUrlPatterns?: string[];
       targetUrlPatterns?: string[];
-      enabled?: boolean;
+      title?: string;
+      type?: ItemType;
+      visible?: boolean;
     },
     callback?: () => void
   ): number | string;
+
   function update(
     id: number | string,
     updateProperties: {
