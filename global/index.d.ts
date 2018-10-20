@@ -244,18 +244,22 @@ declare namespace browser.contextMenus {
   type ItemType = "normal" | "checkbox" | "radio" | "separator";
 
   type OnClickData = {
+    bookmarkId?: string;
+    checked?: boolean;
+    editable: boolean;
+    frameId?: number;
+    frameUrl?: string;
+    linkText?: string;
+    linkUrl?: string;
+    mediaType?: string;
     menuItemId: number | string;
     modifiers: string[];
-    editable: boolean;
-    parentMenuItemId?: number | string;
-    mediaType?: string;
-    linkUrl?: string;
-    srcUrl?: string;
     pageUrl?: string;
-    frameUrl?: string;
+    parentMenuItemId?: number | string;
     selectionText?: string;
+    srcUrl?: string;
+    targetElementId?: number;
     wasChecked?: boolean;
-    checked?: boolean;
   };
 
   const ACTION_MENU_TOP_LEVEL_LIMIT: number;
