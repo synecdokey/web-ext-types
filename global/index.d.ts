@@ -1833,9 +1833,45 @@ declare namespace browser.webRequest {
     authCredentials?: { username: string, password: string };
   };
 
+  type CertificateInfo = {
+    fingerprint: {
+      sha1: string;
+      sha256: string;
+    };
+    isBuiltInRoot: boolean;
+    issuer: string;
+    rawDER: number[];
+    serialNumber: string;
+    subject: string;
+    subjectPublicKeyInfoDigest: { sha256: string };
+    validity: { start: number; end: number };
+   };
+
   type UploadData = {
     bytes?: ArrayBuffer;
     file?: string;
+  };
+
+  type SecurityInfo = {
+    certificates: CertificateInfo[];
+    certificateTransparencyStatus?:
+      | "not_applicable"
+      | "policy_compliant"
+      | "policy_not_enough_scts"
+      | "policy_not_diverse_scts";
+    cipherSuite?: string;
+    errorMessage?: string;
+    hpkp?: boolean;
+    hsts?: boolean;
+    isDomainMismatch?: boolean;
+    isExtendedValidation?: boolean;
+    isNotValidAtThisTime?: boolean;
+    isUntrusted?: boolean;
+    keaGroupName?: string;
+    protocolVersion?: "TLSv1" | "TLSv1.1" | "TLSv1.2" | "TLSv1.3" | "unknown";
+    signatureSchemeName?: string;
+    state: "broken" | "insecure" | "secure" | "weak";
+    weaknessReasons?: string;
   };
 
   const MAX_HANDLER_BEHAVIOR_CHANGED_CALLS_PER_10_MINUTES: number;
@@ -2025,6 +2061,14 @@ declare namespace browser.webRequest {
   >;
 
   function filterResponseData(requestId: string): StreamFilter;
+
+  function getSecurityInfo(
+    requestId: string,
+    options: {
+      certificateChain?: boolean;
+      rawDER?: boolean;
+    }
+  ): SecurityInfo;
 }
 
 declare namespace browser.windows {
