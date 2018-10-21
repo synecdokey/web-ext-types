@@ -1477,6 +1477,7 @@ declare namespace browser.tabs {
     discarded?: boolean;
     favIconUrl?: string;
     height?: number;
+    hidden: boolean;
     highlighted: boolean;
     id?: number;
     incognito: boolean;
@@ -1522,6 +1523,10 @@ declare namespace browser.tabs {
     url?: string;
     windowId?: number;
   }): Promise<Tab>;
+  function captureTab(
+    tabId?: number,
+    options?: browser.extensionTypes.ImageDetails
+  ): Promise<string>;
   function captureVisibleTab(
     windowId?: number,
     options?: browser.extensionTypes.ImageDetails
@@ -1538,6 +1543,7 @@ declare namespace browser.tabs {
   // deprecated: function getSelected(windowId?: number): Promise<browser.tabs.Tab>;
   function getZoom(tabId?: number): Promise<number>;
   function getZoomSettings(tabId?: number): Promise<ZoomSettings>;
+  function hide(tabIds: number | number[]): Promise<number[]>;
   // unsupported: function highlight(highlightInfo: {
   //     windowId?: number,
   //     tabs: number[]|number,
@@ -1566,6 +1572,7 @@ declare namespace browser.tabs {
     cookieStoreId?: string;
     currentWindow?: boolean;
     discarded?: boolean;
+    hidden?: boolean;
     highlighted?: boolean;
     index?: number;
     muted?: boolean;
@@ -1599,6 +1606,7 @@ declare namespace browser.tabs {
     tabId: number | undefined,
     zoomSettings: ZoomSettings
   ): Promise<void>;
+  function show(tabIds: number | number[]): Promise<void>;
   function toggleReaderMode(
     tabId?:number
   ):Promise<void>;
@@ -1608,6 +1616,7 @@ declare namespace browser.tabs {
       active?: boolean;
       // unsupported: autoDiscardable?: boolean,
       // unsupported: highlighted?: boolean,
+      // unsupported: hidden?: boolean;
       loadReplace?: boolean;
       muted?: boolean;
       openerTabId?: number;
