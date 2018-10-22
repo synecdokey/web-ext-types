@@ -1,7 +1,7 @@
 {
   "name": "web-ext-types",
   "author": "Kelsey Zapata <key@kelseasy.org> (https://kelseyz.org)",
-  "version": "2.3.0",
+  "version": "3.0.0",
   "description": "TypeScript type definitions for WebExtensions",
   "keywords": [
     "firefox",

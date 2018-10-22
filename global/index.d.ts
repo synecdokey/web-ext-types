@@ -222,82 +222,105 @@ declare namespace browser.commands {
   const onCommand: Listener<string>;
 }
 
-declare namespace browser.contextMenus {
+declare namespace browser.menus {
   type ContextType =
     | "all"
-    | "page"
-    | "frame"
-    | "page"
-    | "link"
-    | "editable"
-    | "image"
-    | "selection"
-    | "video"
     | "audio"
-    | "launcher"
+    | "bookmarks"
     | "browser_action"
+    | "editable"
+    | "frame"
+    | "image"
+    // | "launcher" unsupported
+    | "link"
+    | "page"
     | "page_action"
     | "password"
-    | "tab";
+    | "selection"
+    | "tab"
+    | "tools_menu"
+    | "video";
 
   type ItemType = "normal" | "checkbox" | "radio" | "separator";
 
   type OnClickData = {
+    bookmarkId?: string;
+    checked?: boolean;
+    editable: boolean;
+    frameId?: number;
+    frameUrl?: string;
+    linkText?: string;
+    linkUrl?: string;
+    mediaType?: string;
     menuItemId: number | string;
     modifiers: string[];
-    editable: boolean;
-    parentMenuItemId?: number | string;
-    mediaType?: string;
-    linkUrl?: string;
-    srcUrl?: string;
     pageUrl?: string;
-    frameUrl?: string;
+    parentMenuItemId?: number | string;
     selectionText?: string;
+    srcUrl?: string;
+    targetElementId?: number;
     wasChecked?: boolean;
-    checked?: boolean;
   };
 
   const ACTION_MENU_TOP_LEVEL_LIMIT: number;
 
   function create(
     createProperties: {
-      type?: ItemType;
-      id?: string;
-      title?: string;
       checked?: boolean;
       command?:
         | "_execute_browser_action"
         | "_execute_page_action"
         | "_execute_sidebar_action";
       contexts?: ContextType[];
+      documentUrlPatterns?: string[];
+      enabled?: boolean;
+      icons?: object;
+      id?: string;
       onclick?: (info: OnClickData, tab: browser.tabs.Tab) => void;
       parentId?: number | string;
-      documentUrlPatterns?: string[];
       targetUrlPatterns?: string[];
-      enabled?: boolean;
+      title?: string;
+      type?: ItemType;
+      visible?: boolean;
     },
     callback?: () => void
   ): number | string;
+
+  function getTargetElement(targetElementId: number): object | null;
+
+  function refresh(): Promise<void>;
+
+  function remove(menuItemId: number | string): Promise<void>;
+
+  function removeAll(): Promise<void>;
+
   function update(
     id: number | string,
     updateProperties: {
-      type?: ItemType;
-      title?: string;
       checked?: boolean;
+      command?:
+        | "_execute_browser_action"
+        | "_execute_page_action"
+        | "_execute_sidebar_action";
       contexts?: ContextType[];
+      documentUrlPatterns?: string[];
+      enabled?: boolean;
       onclick?: (info: OnClickData, tab: browser.tabs.Tab) => void;
       parentId?: number | string;
-      documentUrlPatterns?: string[];
       targetUrlPatterns?: string[];
-      enabled?: boolean;
+      title?: string;
+      type?: ItemType;
+      visible?: boolean;
     }
   ): Promise<void>;
-  function remove(menuItemId: number | string): Promise<void>;
-  function removeAll(): Promise<void>;
 
   const onClicked: EvListener<
     (info: OnClickData, tab: browser.tabs.Tab) => void
   >;
+
+  const onHidden: EvListener<() => void>;
+
+  const onShown: EvListener<(info: OnClickData, tab: browser.tabs.Tab) => void>;
 }
 
 declare namespace browser.contextualIdentities {
