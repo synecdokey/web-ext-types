@@ -165,6 +165,15 @@ declare namespace browser.browserAction {
   function getBadgeBackgroundColor(details: {
     tabId?: number;
   }): Promise<ColorArray>;
+  function setBadgeTextColor(details: {
+    color: string | ColorArray, tabId?: number
+  }): void
+  function setBadgeTextColor(details: {
+    color: string | ColorArray, windowId?: number
+  }): void
+  function setBadgeTextColor(details: {color: null, tabId?: number}): void
+  function getBadgeTextColor(details: {tabId?: string}): Promise<ColorArray>
+  function getBadgeTextColor(details: {windowId?: string}): Promise<ColorArray>
   function enable(tabId?: number): void;
   function disable(tabId?: number): void;
 
