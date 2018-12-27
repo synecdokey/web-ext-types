@@ -166,14 +166,18 @@ declare namespace browser.browserAction {
     tabId?: number;
   }): Promise<ColorArray>;
   function setBadgeTextColor(details: {
-    color: string | ColorArray, tabId?: number
-  }): void
+    color: string | ColorArray;
+    tabId?: number;
+  }): void;
   function setBadgeTextColor(details: {
-    color: string | ColorArray, windowId?: number
-  }): void
-  function setBadgeTextColor(details: {color: null, tabId?: number}): void
-  function getBadgeTextColor(details: {tabId?: string}): Promise<ColorArray>
-  function getBadgeTextColor(details: {windowId?: string}): Promise<ColorArray>
+    color: string | ColorArray;
+    windowId?: number;
+  }): void;
+  function setBadgeTextColor(details: { color: null; tabId?: number }): void;
+  function getBadgeTextColor(details: { tabId?: string }): Promise<ColorArray>;
+  function getBadgeTextColor(details: {
+    windowId?: string;
+  }): Promise<ColorArray>;
   function enable(tabId?: number): void;
   function disable(tabId?: number): void;
 
@@ -1616,9 +1620,7 @@ declare namespace browser.tabs {
     zoomSettings: ZoomSettings
   ): Promise<void>;
   function show(tabIds: number | number[]): Promise<void>;
-  function toggleReaderMode(
-    tabId?:number
-  ):Promise<void>;
+  function toggleReaderMode(tabId?: number): Promise<void>;
   function update(
     tabId: number | undefined,
     updateProperties: {
@@ -1862,7 +1864,7 @@ declare namespace browser.webRequest {
     redirectUrl?: string;
     requestHeaders?: HttpHeaders;
     responseHeaders?: HttpHeaders;
-    authCredentials?: { username: string, password: string };
+    authCredentials?: { username: string; password: string };
   };
 
   type UploadData = {
@@ -2115,7 +2117,7 @@ declare namespace browser.windows {
 
   // TODO: url and tabId should be exclusive
   function create(createData?: {
-    allowScriptsToClose?:boolean;
+    allowScriptsToClose?: boolean;
     url?: string | string[];
     tabId?: number;
     left?: number;
@@ -2124,7 +2126,7 @@ declare namespace browser.windows {
     height?: number;
     // unsupported: focused?: boolean,
     incognito?: boolean;
-    titlePreface?:string;
+    titlePreface?: string;
     type?: CreateType;
     state?: WindowState;
   }): Promise<browser.windows.Window>;
