@@ -205,12 +205,17 @@ declare namespace browser.browsingData {
     originTypes?: { unprotectedWeb: boolean };
   };
 
+  type ExtraDataRemovalOptions = {
+    hostnames?: string[]
+  }
+
   function remove(
     removalOptions: DataRemovalOptions,
     dataTypes: DataTypeSet
   ): Promise<void>;
   function removeCache(removalOptions?: DataRemovalOptions): Promise<void>;
-  function removeCookies(removalOptions: DataRemovalOptions): Promise<void>;
+  function removeCookies(removalOptions: DataRemovalOptions & ExtraDataRemovalOptions): Promise<void>;
+  function removeLocalStorage(removalOptions: DataRemovalOptions & ExtraDataRemovalOptions): Promise<void>;
   function removeDownloads(removalOptions: DataRemovalOptions): Promise<void>;
   function removeFormData(removalOptions: DataRemovalOptions): Promise<void>;
   function removeHistory(removalOptions: DataRemovalOptions): Promise<void>;
@@ -388,14 +393,22 @@ declare namespace browser.cookies {
     secure: boolean;
     httpOnly: boolean;
     session: boolean;
+    firstPartyDomain?: string;
+    sameSite: SameSiteStatus
     expirationDate?: number;
     storeId: string;
   };
 
   type CookieStore = {
     id: string;
+    incognito: boolean;
     tabIds: number[];
   };
+
+  type SameSiteStatus = 
+    | 'no_restriction'
+    | 'lax'
+    | 'strict'
 
   type OnChangedCause =
     | "evicted"
@@ -408,6 +421,7 @@ declare namespace browser.cookies {
     url: string;
     name: string;
     storeId?: string;
+    firstPartyDomain?: string;
   }): Promise<Cookie | null>;
   function getAll(details: {
     url?: string;
@@ -417,6 +431,7 @@ declare namespace browser.cookies {
     secure?: boolean;
     session?: boolean;
     storeId?: string;
+    firstPartyDomain?: string;
   }): Promise<Cookie[]>;
   function set(details: {
     url: string;
@@ -427,11 +442,13 @@ declare namespace browser.cookies {
     httpOnly?: boolean;
     expirationDate?: number;
     storeId?: string;
+    firstPartyDomain?: string;
   }): Promise<Cookie>;
   function remove(details: {
     url: string;
     name: string;
     storeId?: string;
+    firstPartyDomain?: string;
   }): Promise<Cookie | null>;
   function getAllCookieStores(): Promise<CookieStore[]>;
 
