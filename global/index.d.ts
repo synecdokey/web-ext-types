@@ -733,12 +733,12 @@ declare namespace browser.find {
         entireWord: boolean;
         includeRangeData: boolean;
         includeRectData: boolean;
-    }
+    };
 
     type FindResults = {
         count: number;
-        rangeData?: browser.find.RangeData[];
-        rectData?: browser.find.RectData[];
+        rangeData?: RangeData[];
+        rectData?: RectData[];
     };
 
     type RangeData = {
@@ -753,13 +753,12 @@ declare namespace browser.find {
     type RectData = {
         rectsAndTexts: RectsAndTexts;
         text: string;
-    }
+    };
 
     type RectsAndTexts = {
-        rectList: {
-        }[];
+        rectList: RectItem[];
         textList: string[];
-    }
+    };
 
     type RectItem = {
         top: number;
@@ -768,7 +767,7 @@ declare namespace browser.find {
         right: number;
     };
 
-    function find(query: string, object?: browser.find.FindOptions): browser.find.FindResults
+    function find(query: string, object?: FindOptions): Promise<FindResults>;
     function highlightResults(): void;
     function removeHighlighting(): void;
 }
