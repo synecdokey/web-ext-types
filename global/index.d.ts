@@ -726,6 +726,52 @@ declare namespace browser.extensionTypes {
   type InjectDetailsCSS = InjectDetails & { cssOrigin?: "user" | "author" };
 }
 
+declare namespace browser.find {
+    type FindOptions = {
+        tabid: number;
+        caseSensitive: boolean;
+        entireWord: boolean;
+        includeRangeData: boolean;
+        includeRectData: boolean;
+    };
+
+    type FindResults = {
+        count: number;
+        rangeData?: RangeData[];
+        rectData?: RectData[];
+    };
+
+    type RangeData = {
+        framePos: number;
+        startTextNodePos: number;
+        endTextNodePos: number;
+        startOffset: number;
+        endOffset: number;
+        text: string;
+    };
+
+    type RectData = {
+        rectsAndTexts: RectsAndTexts;
+        text: string;
+    };
+
+    type RectsAndTexts = {
+        rectList: RectItem[];
+        textList: string[];
+    };
+
+    type RectItem = {
+        top: number;
+        left: number;
+        bottom: number;
+        right: number;
+    };
+
+    function find(query: string, object?: FindOptions): Promise<FindResults>;
+    function highlightResults(): void;
+    function removeHighlighting(): void;
+}
+
 declare namespace browser.history {
   type TransitionType =
     | "link"
