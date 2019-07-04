@@ -1098,7 +1098,7 @@ declare namespace browser.runtime {
     // WebExtensionManifest
     background?: {
       page: string;
-      script: string[];
+      scripts: string[];
       persistent?: boolean;
     };
     content_scripts?: {
