@@ -1034,15 +1034,9 @@ declare namespace browser.runtime {
     name: string;
     disconnect(): void;
     error: object;
-    onDisconnect: {
-      addListener(cb: (port: Port) => void): void;
-      removeListener(cb: (port: Port) => void): void;
-    };
-    onMessage: {
-      addListener(cb: (message: object) => void): void;
-      removeListener(cb: (message: object) => void): void;
-    };
-    postMessage(message: object): void;
+    onDisconnect: Listener<Port>;
+    onMessage: Listener<any>;
+    postMessage: <T>(message: T) => void;
     sender?: runtime.MessageSender;
   };
 
