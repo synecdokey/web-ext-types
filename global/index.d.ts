@@ -1323,6 +1323,9 @@ declare namespace browser.runtime {
   // Will not exist: https://bugzilla.mozilla.org/show_bug.cgi?id=1314922
   // function RequestUpdateCheck(): Promise<RequestUpdateCheckStatus>;
   function connect(
+    connectInfo?: { name?: string; includeTlsChannelId?: boolean }
+  ): Port;
+  function connect(
     extensionId?: string,
     connectInfo?: { name?: string; includeTlsChannelId?: boolean }
   ): Port;
