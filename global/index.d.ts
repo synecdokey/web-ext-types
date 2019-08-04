@@ -434,15 +434,17 @@ declare namespace browser.cookies {
     firstPartyDomain?: string;
   }): Promise<Cookie[]>;
   function set(details: {
-    url: string;
-    name?: string;
     domain?: string;
-    path?: string;
-    secure?: boolean;
-    httpOnly?: boolean;
     expirationDate?: number;
-    storeId?: string;
     firstPartyDomain?: string;
+    httpOnly?: boolean;
+    name?: string;
+    path?: string;
+    sameSite?: SameSiteStatus;
+    secure?: boolean;
+    storeId?: string;
+    url: string;
+    value?: string;
   }): Promise<Cookie>;
   function remove(details: {
     url: string;
