@@ -10,6 +10,9 @@ interface EvListener<T extends Function> {
 
 type Listener<T> = EvListener<(arg: T) => void>;
 
+type WinOrTab<T> = T & ({ windowId?: number} | { tabId?: number });
+
+
 declare namespace browser.alarms {
   type Alarm = {
     name: string;
@@ -131,57 +134,64 @@ declare namespace browser.browserAction {
   type ColorArray = [number, number, number, number];
   type ImageDataType = ImageData;
 
-  function setTitle(details: { title: string | null; tabId?: number }): void;
-  function getTitle(details: { tabId?: number }): Promise<string>;
+  function setTitle(details: WinOrTab<{ title: string | null; }>): void;
+  function getTitle(details: WinOrTab<{ tabId?: number }>): Promise<string>;
 
-  type IconViaPath = {
+  type IconViaPath = WinOrTab<{
     path: string | { [size: number]: string };
-    tabId?: number;
-  };
+  }>;
 
-  type IconViaImageData = {
+  type IconViaImageData = WinOrTab<{
     imageData: ImageDataType | { [size: number]: ImageDataType };
-    tabId?: number;
-  };
+  }>;
 
-  type IconReset = {
+  type IconReset = WinOrTab<{
     imageData?: {} | null;
     path?: {} | null;
-    tabId?: number;
-  };
+  }>;
 
   function setIcon(
     details: IconViaPath | IconViaImageData | IconReset
   ): Promise<void>;
-  function setPopup(details: { popup: string | null; tabId?: number }): void;
-  function getPopup(details: { tabId?: number }): Promise<string>;
+  function setPopup(details: WinOrTab<{ popup: string | null; }>): void;
+  function getPopup(details: WinOrTab<{}>): Promise<string>;
   function openPopup(): Promise<void>;
-  function setBadgeText(details: { text: string | null; tabId?: number }): void;
-  function getBadgeText(details: { tabId?: number }): Promise<string>;
-  function setBadgeBackgroundColor(details: {
+  function setBadgeText(details: WinOrTab<{ text: string | null; }>): void;
+  function getBadgeText(details: WinOrTab<{}>): Promise<string>;
+  function setBadgeBackgroundColor(details: WinOrTab<{
     color: string | ColorArray | null;
-    tabId?: number;
-  }): void;
-  function getBadgeBackgroundColor(details: {
-    tabId?: number;
-  }): Promise<ColorArray>;
-  function setBadgeTextColor(details: {
-    color: string | ColorArray;
-    tabId?: number;
-  }): void;
-  function setBadgeTextColor(details: {
-    color: string | ColorArray;
-    windowId?: number;
-  }): void;
-  function setBadgeTextColor(details: { color: null; tabId?: number }): void;
-  function getBadgeTextColor(details: { tabId?: string }): Promise<ColorArray>;
-  function getBadgeTextColor(details: {
-    windowId?: string;
-  }): Promise<ColorArray>;
+  }>): void;
+  function getBadgeBackgroundColor(details: WinOrTab<{}>): Promise<ColorArray>;
+  function setBadgeTextColor(details: WinOrTab<{
+    color: string | ColorArray | null;
+  }>): void;
+  function setBadgeTextColor(details: WinOrTab<{
+    color: string | ColorArray | null;
+  }>): void;
+  function setBadgeTextColor(details: WinOrTab<{ color: null; }>): void;
+  function getBadgeTextColor(details: WinOrTab<{}>): Promise<ColorArray>;
   function enable(tabId?: number): void;
   function disable(tabId?: number): void;
+  function isEnabled(details: WinOrTab<{}>): Promise<boolean>;
 
   const onClicked: Listener<browser.tabs.Tab>;
+}
+
+declare namespace browser.browserSettings {
+  const allowPopupsForUserEvents: browser.types.BrowserSetting<boolean>;
+  const cacheEnabled: browser.types.BrowserSetting<boolean>;
+  const closeTabsByDoubleClick: browser.types.BrowserSetting<boolean>;
+  const contextMenuShowEvent: browser.types.BrowserSetting<"mouseup" | "mousedown">;
+  const homepageOverride: browser.types.BrowserSetting<string>;
+  const imageAnimationBehavior: browser.types.BrowserSetting<"normal" | "none" | "once">;
+  const newTabPageOverride: browser.types.BrowserSetting<string>;
+  const newTabPosition: browser.types.BrowserSetting<"afterCurrent" | "relatedAfterCurrent" | "atEnd">;
+  const openBookmarksInNewTabs: browser.types.BrowserSetting<boolean>;
+  const openSearchResultsInNewTabs: browser.types.BrowserSetting<boolean>;
+  const openUrlbarResultsInNewTabs: browser.types.BrowserSetting<boolean>;
+  const overrideDocumentColors: browser.types.BrowserSetting<"high-contrast-only" | "never" | "always">;
+  const useDocumentFonts: browser.types.BrowserSetting<boolean>;
+  const webNotificationsDisabled: browser.types.BrowserSetting<boolean>;
 }
 
 declare namespace browser.browsingData {
@@ -201,8 +211,13 @@ declare namespace browser.browsingData {
   };
 
   type DataRemovalOptions = {
+    hostnames?: string[];
+    originTypes?: {
+      extension?: boolean;
+      protectedWeb?: boolean;
+      unprotectedWeb?: boolean;
+    };
     since?: number;
-    originTypes?: { unprotectedWeb: boolean };
   };
 
   type ExtraDataRemovalOptions = {
@@ -228,6 +243,10 @@ declare namespace browser.browsingData {
   }>;
 }
 
+declare namespace browser.clipboard {
+  function setImageData(imageData: ArrayBuffer, imageType: "png" | "jpeg"): void;
+}
+
 declare namespace browser.commands {
   type Command = {
     name?: string;
@@ -236,6 +255,12 @@ declare namespace browser.commands {
   };
 
   function getAll(): Promise<Command[]>;
+  function reset(name: string): Promise<void>;
+  function update(details: {
+    name: string;
+    description?: string;
+    shortcut?: string;
+  }): Promise<void>;
 
   const onCommand: Listener<string>;
 }
@@ -263,6 +288,7 @@ declare namespace browser.menus {
 
   type OnClickData = {
     bookmarkId?: string;
+    button?: number;
     checked?: boolean;
     editable: boolean;
     frameId?: number;
@@ -277,6 +303,7 @@ declare namespace browser.menus {
     selectionText?: string;
     srcUrl?: string;
     targetElementId?: number;
+    viewType?: browser.extension.ViewType;
     wasChecked?: boolean;
   };
 
@@ -356,12 +383,21 @@ declare namespace browser.contextualIdentities {
     | "briefcase"
     | "dollar"
     | "cart"
-    | "circle";
+    | "circle"
+    | "gift"
+    | "vacation"
+    | "food"
+    | "fruit"
+    | "pet"
+    | "tree"
+    | "chill";
 
   type ContextualIdentity = {
     cookieStoreId: string;
     color: IdentityColor;
+    colorCode: string;
     icon: IdentityIcon;
+    iconUrl: string;
     name: string;
   };
 
@@ -381,6 +417,10 @@ declare namespace browser.contextualIdentities {
     }
   ): Promise<ContextualIdentity>;
   function remove(cookieStoreId: string): Promise<ContextualIdentity | null>;
+  
+  const onCreated: Listener<{ changeInfo: { contextualIdentity: ContextualIdentity } }>;
+  const onRemoved: Listener<{ changeInfo: { contextualIdentity: ContextualIdentity } }>;
+  const onUpdated: Listener<{ changeInfo: { contextualIdentity: ContextualIdentity } }>;
 }
 
 declare namespace browser.cookies {
@@ -486,13 +526,17 @@ declare namespace browser.contentScripts {
 declare namespace browser.devtools.inspectedWindow {
   const tabId: number;
 
+
   function eval(
-    expression: string
+    expression: string, options?: {
+      frameURL?: string;
+      useContentScriptContext?: boolean;
+      contextSecurityOrigin?: string;
+    }
   ): Promise<
     [
       any,
-
-
+      undefined
         | { isException: boolean; value: string }
         | { isError: boolean; code: string }
     ]
@@ -506,20 +550,222 @@ declare namespace browser.devtools.inspectedWindow {
 }
 
 declare namespace browser.devtools.network {
+  /**
+   * HAR JSON File Format
+   *
+   * As described in http://www.softwareishard.com/blog/har-12-spec/.
+   */
+  type HAR = {
+    log: HARLog;
+  };
+
+  type HARLog = {
+    version: string;
+    creator: HARCreator;
+    browser?: HARCreator;
+    pages?: HARPage[];
+    entries: HAREntry[];
+    comment?: string;
+  };
+
+  type HARCreator = {
+    name: "1.2";
+    version: string;
+    comment?: string;
+  };
+
+  type HARPage = {
+    startedDateTime: string;
+    id: string;
+    title: string;
+    pageTimings: HARPageTimings;
+    comment?: string;
+  };
+
+  type HARPageTimings = {
+    onContentLoad: number;
+    onLoad: number;
+    comment?: string;
+  };
+
+  type HAREntry = {
+    pageref?: string;
+    startedDateTime: string;
+    time: number;
+    request: HARRequest;
+    response: HARResponse;
+    cache?: HARCache;
+    timings: HARTiming[];
+    serverIPAddress?: string;
+    connection?: string;
+    comment?: string;
+  };
+
+  type HARRequest = {
+    method: string;
+    url: string;
+    httpVersion: string;
+    cookies: HARCookie[];
+    headers: HARHeader[];
+    queryString: HARQueryStringItem[];
+    postData?: HARPostData;
+    headersSize: number;
+    bodySize: number;
+    comment?: string;
+  };
+
+  type HARResponse = {
+    status: number;
+    statusText: string;
+    httpVersion: string;
+    cookies: HARCookie[];
+    headers: HARHeader[];
+    content: HARContent;
+    redirectURL: string;
+    headersSize: number;
+    bodySize: number;
+    comment?: string;
+  };
+
+  type HARCookie = {
+    name: string;
+    value: string;
+    path?: string;
+    domain?: string;
+    expires?: string;
+    httpOnly?: boolean;
+    secure?: boolean;
+    comment?: string;
+  };
+
+  type HARHeader = {
+    name: string;
+    value: string;
+    comment?: string;
+  };
+
+  type HARQueryStringItem = {
+    name: string;
+    value: string;
+    comment?: string;
+  };
+
+  type HARPostData = {
+    mimeType: string;
+    params: HARParam[];
+    text: string;
+    comment?: string;
+  };
+
+  type HARParam = {
+    name: string;
+    value?: string;
+    fileName?: string;
+    contentType?: string;
+    comment?: string;
+  };
+
+  type HARContent = {
+    size: number;
+    compression?: number;
+    mimeType: string;
+    text?: string;
+    encoding?: string;
+    comment?: string;
+  };
+
+  type HARCache = {
+    beforeRequest?: HARCacheState | null;
+    afterRequest?: HARCacheState | null;
+    comment?: string;
+  };
+
+  type HARCacheState = {
+    expires?: string;
+    lastAccess: string;
+    eTag: string;
+    hitCount: number;
+    comment?: string;
+  };
+
+  type HARTiming = {
+    blocked?: number;
+    dns?: number;
+    connect?: number;
+    send: number;
+    wait: number;
+    receive: number;
+    ssl?: number;
+    comment?: string;
+  };
+
+
+  function getHAR(): Promise<HAR>;
+
   const onNavigated: Listener<string>;
+  const onRequestFinished: Listener<HAREntry & {
+    getContent: () => Promise<{
+      content: string;
+      encoding: string;
+    }>  // Check this!
+  }>;
 }
 
 declare namespace browser.devtools.panels {
+  type ElementsPanel = {
+    createSidebarPane: (title: string) => Promise<ExtensionSidebarPane>;
+
+    onSelectionChanged: Listener<void>;
+  };
+
   type ExtensionPanel = {
     onShown: Listener<Window>;
     onHidden: Listener<void>;
   };
+  
+  type ExtensionSidebarPane = {
+    setExpression: (expression: string, rootTitel?: string) => Promise<void>;
+    setObject: (jsonObject: string|Array<object>|object, rootTitle?: string) => Promise<void>;
+    setPage: (extensionPageURL: string) => Promise<void>;
+    
+    onShown: Listener<void>;
+    onHidden: Listener<void>;
+  };
+  
+  type ThemeName = "light" | "dark" | "firebug";
 
   function create(
     title: string,
     iconPath: string,
     pagePath: string
   ): Promise<ExtensionPanel>;
+
+
+  const elements: ElementsPanel;
+  const themeName: ThemeName;
+
+  const onThemeChanged: Listener<ThemeName>;
+}
+
+declare namespace browser.dns {
+  type Flag =
+    | "allow_name_collisions"
+    | "bypass_cache"
+    | "canonical_name"
+    | "disable_ipv4"
+    | "disable_ipv6"
+    | "disable_trr"
+    | "offline"
+    | "priority_low"
+    | "priority_medium"
+    | "speculate";
+
+
+  function resolve(hostname: string, flags?: Flag[]): Promise<{
+    addresses: string[];
+    canonicalName?: string;
+    isTRR: boolean;
+  }>;
 }
 
 declare namespace browser.downloads {
@@ -669,6 +915,14 @@ declare namespace browser.downloads {
 }
 
 declare namespace browser.events {
+  type Rule = {
+    id?: string;
+    tags?: string[];
+    conditions: any[];
+    actions: any[];
+    priority?: number;
+  };
+
   type UrlFilter = {
     hostContains?: string;
     hostEquals?: string;
@@ -694,7 +948,7 @@ declare namespace browser.events {
 }
 
 declare namespace browser.extension {
-  type ViewType = "tab" | "notification" | "popup";
+  type ViewType = "tab" | "notification" | "popup" | "sidebar";
 
   const lastError: string | null;
   const inIncognitoContext: boolean;
@@ -831,6 +1085,10 @@ declare namespace browser.history {
   function deleteAll(): Promise<void>;
 
   const onVisited: Listener<HistoryItem>;
+  const onTitleChanged: Listener<{
+    url: string;
+    title: string;
+  }>;
 
   // TODO: Ensure that urls is not `urls: [string]` instead
   const onVisitRemoved: Listener<{ allHistory: boolean; urls: string[] }>;
@@ -889,13 +1147,21 @@ declare namespace browser.management {
     optionsUrl: string;
     permissions: string[];
     shortName: string;
-    // unsupported: type: string,
+    type: string;
     updateUrl: string;
     version: string;
     // unsupported: versionName: string,
   };
 
+  function get(id: string): Promise<ExtensionInfo>;
+  function getAll(): Promise<ExtensionInfo[]>;
   function getSelf(): Promise<ExtensionInfo>;
+  function install(options: {
+    url: string;
+  }): Promise<{
+    id: string;
+  }>;
+  function setEnabled(id: string, enabled: boolean): Promise<void>;
   function uninstallSelf(options: {
     showConfirmDialog: boolean;
     dialogMessage: string;
@@ -956,19 +1222,23 @@ declare namespace browser.pageAction {
 
   function hide(tabId: number): void;
 
-  function setTitle(details: { tabId: number; title: string }): void;
+  function isShown(details: { tabId: number; }): Promise<boolean>;
+
+  function setTitle(details: { tabId: number; title: string | null }): void;
 
   function getTitle(details: { tabId: number }): Promise<string>;
 
   function setIcon(details: {
     tabId: number;
-    path?: string | object;
-    imageData?: ImageDataType;
+    path?: string | { [size: number]: string } | null;
+    imageData?: ImageDataType | { [size: number]: ImageDataType } | null;
   }): Promise<void>;
 
-  function setPopup(details: { tabId: number; popup: string }): void;
+  function setPopup(details: { tabId: number; popup: string | null }): void;
 
   function getPopup(details: { tabId: number }): Promise<string>;
+
+  function openPopup(): Promise<void>;
 
   const onClicked: Listener<browser.tabs.Tab>;
 }
@@ -1026,6 +1296,135 @@ declare namespace browser.permissions {
   // Not yet support in Edge and Firefox:
   // const onAdded: Listener<Permissions>;
   // const onRemoved: Listener<Permissions>;
+}
+
+declare namespace browser.pkcs11 {
+  interface Token {
+    name: string;
+    manufacturer: string;
+    HWVersion: string;
+    SWVersion: string;
+    serial: string;
+    isLoggedIn: boolean;
+  }
+
+  function getModuleSlots(name: string): Promise<{
+    name: string;
+    token: Token | null;
+  }[]>;
+  function installModule(name: string, flags: number): Promise<void>;
+  function isModuleInstalled(name: string): Promise<boolean>;
+  function uninstallModule(name: string): Promise<void>;
+}
+
+declare namespace browser.privacy {
+  namespace network {
+    type WebRTCIPHandlingPolicy =
+      | "default"
+      | "default_public_and_private_interfaces"
+      | "default_public_interface_only"
+      | "disable_non_proxied_udp";
+
+    const networkPredictionEnabled: browser.types.BrowserSetting<boolean>;
+    const peerConnectionEnabled: browser.types.BrowserSetting<boolean>;
+    const webRTCIPHandlingPolicy: browser.types.BrowserSetting<WebRTCIPHandlingPolicy>;
+  }
+
+  namespace services {
+    const passwordSavingEnabled: browser.types.BrowserSetting<boolean>;
+  }
+
+  namespace websites {
+    type CookieConfigBehaviour =
+      | "allow_all"
+      | "reject_all"
+      | "reject_third_party"
+      | "allow_visited"
+      | "reject_trackers";
+
+    type TrackingProtectionMode =
+      | "always"
+      | "never"
+      | "private_browsing";
+
+    const cookieConfig: browser.types.BrowserSetting<{
+      behaviour: CookieConfigBehaviour;
+      nonPersistentCookies: boolean;
+    }>;
+    const firstPartyIsolate: browser.types.BrowserSetting<boolean>;
+    const hyperlinkAuditingEnabled: browser.types.BrowserSetting<boolean>;
+    const protectedContentEnabled: browser.types.BrowserSetting<boolean>;
+    const referrersEnabled: browser.types.BrowserSetting<boolean>;
+    const resistFingerprinting: browser.types.BrowserSetting<boolean>;
+    const thirdPartyCookiesAllowed: browser.types.BrowserSetting<boolean>;
+    const trackingProtectionMode: browser.types.BrowserSetting<TrackingProtectionMode>;
+  }
+}
+
+declare namespace browser.proxy {
+  type ProxyInfoType =
+    | "direct"
+    | "http"
+    | "https"
+    | "socks"
+    | "socks4";
+
+  type SettingsProxyType =
+    | "none"
+    | "autoDetect"
+    | "system"
+    | "manual"
+    | "autoConfig";
+
+  type SettingsSocksVersion = 4 | 5;
+  
+  type ExtraInfoSpecItem = "requestHeaders";
+
+
+  interface ProxyInfo {
+    type: ProxyInfoType;
+    host?: string;
+    port?: string;
+    username?: string;
+    password?: string;
+    proxyDNS?: boolean;
+    failoverTimeout?: number;
+  }
+
+  interface RequestDetails {
+    documentUrl: string;
+    frameId: number;
+    fromCache: boolean;
+    ip: string;
+    method: string;
+    originUrl: string;
+    parentFrameId: number;
+    requestId: string;
+    requestHeaders?: browser.webRequest.HttpHeaders;
+    tabId: number;
+    timeStamp: number;
+    type: browser.webRequest.ResourceType;
+    url: string;
+  }
+
+  const settings: browser.types.BrowserSetting<{
+    autoConfigUrl?: string;
+    autoLogin?: boolean;
+    ftp?: string;
+    http?: string;
+    httpProxyAll?: boolean;
+    passthrough?: string;
+    proxyDNS?: boolean;
+    proxyType?: SettingsProxyType;
+    socks?: string;
+    socksVersion?: SettingsSocksVersion;
+    ssl?: string;
+  }>;
+
+  const onError: Listener<{ newState: Error; }>;
+  const onRequest: EvListener<
+    (details: RequestDetails) => ProxyInfo | ProxyInfo[] | Promise<ProxyInfo | ProxyInfo[]>
+  >;
 }
 
 declare namespace browser.runtime {
@@ -1113,6 +1512,7 @@ declare namespace browser.runtime {
       name?: string;
       url?: string;
     };
+    theme?: browser.theme.Theme;
     icons?: {
       [imgSize: string]: string;
     };
@@ -1396,6 +1796,20 @@ declare namespace browser.runtime {
   const onMessageExternal: EvListener<onMessageEvent>;
 }
 
+declare namespace browser.search {
+  function get(): Promise<{
+    name: string;
+    isDefault: boolean;
+    alias?: string;
+    favIconUrl?: string;
+  }[]>;
+  function search(searchProperties: {
+    query: string;
+    engine?: string;
+    tabId?: number;
+  }): void;
+}
+
 declare namespace browser.sessions {
   type Filter = { maxResults?: number };
 
@@ -1443,25 +1857,27 @@ declare namespace browser.sessions {
 declare namespace browser.sidebarAction {
   type ImageDataType = ImageData;
 
-  function setPanel(details: { panel: string; tabId?: number }): void;
+  function setPanel(details: WinOrTab<{ panel: string | null; }>): void;
 
-  function getPanel(details: { tabId?: number }): Promise<string>;
+  function getPanel(details: WinOrTab<{}>): Promise<string>;
 
-  function setTitle(details: { title: string; tabId?: number }): void;
+  function setTitle(details: WinOrTab<{ title: string | null; }>): void;
 
-  function getTitle(details: { tabId?: number }): Promise<string>;
+  function getTitle(details: WinOrTab<{}>): Promise<string>;
 
   type IconViaPath = {
-    path: string | { [index: number]: string };
-    tabId?: number;
+    path: string | { [index: number]: string } | null;
   };
 
   type IconViaImageData = {
-    imageData: ImageDataType | { [index: number]: ImageDataType };
-    tabId?: number;
+    imageData: ImageDataType | { [index: number]: ImageDataType } | null;
   };
 
-  function setIcon(details: IconViaPath | IconViaImageData): Promise<void>;
+  function setIcon(details: WinOrTab<IconViaPath | IconViaImageData>): Promise<void>;
+
+  function isOpen(details: {
+    windowId?: number
+  }): Promise<boolean>;
 
   function open(): Promise<void>;
 
@@ -1525,7 +1941,7 @@ declare namespace browser.storage {
 
   const sync: StorageArea;
   const local: StorageArea;
-  // unsupported: const managed: StorageArea;
+  const managed: StorageArea;
 
   type ChangeDict = { [field: string]: StorageChange };
   type StorageName = "sync" | "local" /* |"managed" */;
@@ -1607,6 +2023,7 @@ declare namespace browser.tabs {
     options?: browser.extensionTypes.ImageDetails
   ): Promise<string>;
   function detectLanguage(tabId?: number): Promise<string>;
+  function discard(tabIds: number | number[]): Promise<void>;
   function duplicate(tabId: number): Promise<Tab>;
   function executeScript(
     tabId: number | undefined,
@@ -1619,10 +2036,11 @@ declare namespace browser.tabs {
   function getZoom(tabId?: number): Promise<number>;
   function getZoomSettings(tabId?: number): Promise<ZoomSettings>;
   function hide(tabIds: number | number[]): Promise<number[]>;
-  // unsupported: function highlight(highlightInfo: {
-  //     windowId?: number,
-  //     tabs: number[]|number,
-  // }): Promise<browser.windows.Window>;
+  function highlight(highlightInfo: {
+    windowId?: number;
+    populate?: boolean;
+    tabs: number[]|number;
+  }): Promise<browser.windows.Window>;
   function insertCSS(
     tabId: number | undefined,
     details: browser.extensionTypes.InjectDetailsCSS
@@ -1638,6 +2056,10 @@ declare namespace browser.tabs {
       index: number;
     }
   ): Promise<Tab | Tab[]>;
+  function moveInSuccession(tabIds: number[], tabId?: number, options?: {
+    append?: boolean;
+    insert?: boolean;
+  }): void;
   function print(): Promise<void>;
   function printPreview(): Promise<void>;
   function query(queryInfo: {
@@ -1766,12 +2188,125 @@ declare namespace browser.tabs {
   }>;
 }
 
+declare namespace browser.theme {
+  type ThemeAlignment =
+    | "bottom"
+    | "center"
+    | "left"
+    | "right"
+    | "top"
+    | "center bottom"
+    | "center center"
+    | "center top"
+    | "left bottom"
+    | "left center"
+    | "left top"
+    | "right bottom"
+    | "right center"
+    | "right top";
+  type ThemeColor = string | [number, number, number];
+  type ThemeTiling =
+    | "no-repeat"
+    | "repeat"
+    | "repeat-x"
+    | "repeat-y";
+
+  type Theme = {
+    images?: {
+      theme_frame: string;
+      additional_backgrounds: string[];
+    };
+
+    colors: {
+      /**
+       * Alias for `toolbar_text`
+       */
+      bookmark_text?: ThemeColor;
+      button_background_active?: ThemeColor;
+      button_background_hover?: ThemeColor;
+      icons?: ThemeColor;
+      icons_attention?: ThemeColor;
+      frame?: ThemeColor;
+      frame_inactive?: ThemeColor;
+      ntp_background?: ThemeColor;
+      ntp_text?: ThemeColor;
+      popup?: ThemeColor;
+      popup_border?: ThemeColor;
+      popup_highlight?: ThemeColor;
+      popup_highlight_text?: ThemeColor;
+      popup_text?: ThemeColor;
+      sidebar?: ThemeColor;
+      sidebar_border?: ThemeColor;
+      sidebar_highlight?: ThemeColor;
+      sidebar_highlight_text?: ThemeColor;
+      sidebar_text?: ThemeColor;
+      tab_background_separator?: ThemeColor;
+      tab_background_text?: ThemeColor;
+      tab_line?: ThemeColor;
+      tab_loading?: ThemeColor;
+      tab_selected?: ThemeColor;
+      tab_text?: ThemeColor;
+      toolbar?: ThemeColor;
+      toolbar_bottom_separator?: ThemeColor;
+      toolbar_field?: ThemeColor;
+      toolbar_field_border?: ThemeColor;
+      toolbar_field_border_focus?: ThemeColor;
+      toolbar_field_focus?: ThemeColor;
+      toolbar_field_highlight?: ThemeColor;
+      toolbar_field_highlight_text?: ThemeColor;
+      toolbar_field_separator?: ThemeColor;
+      toolbar_field_text?: ThemeColor;
+      toolbar_field_text_focus?: ThemeColor;
+      toolbar_text?: ThemeColor;
+      toolbar_top_separator?: ThemeColor;
+      toolbar_vertical_separator?: ThemeColor;
+    };
+
+    properties?: {
+      additional_backgrounds_alignment?: ThemeAlignment[];
+      additional_backgrounds_tiling?: ThemeTiling[];
+    };
+  };
+
+  function getCurrent(windowId?: number): Promise<Theme>;
+  function update(theme: Theme): void;
+  function update(windowId: number, theme: Theme): void;
+  function reset(windowId?: number): void;
+
+  const onUpdated: Listener<{ theme: Theme, windowId?: number }>;
+}
+
 declare namespace browser.topSites {
   type MostVisitedURL = {
+    favicon?: string;
     title: string;
     url: string;
   };
-  function get(): Promise<MostVisitedURL[]>;
+  function get(options?: {
+    includeBlocked?: boolean;
+    includeFavicon?: boolean;
+    limit?: number;
+    onePerDomain?: boolean;
+  }): Promise<MostVisitedURL[]>;
+}
+
+declare namespace browser.types {
+  type BrowserSettingDetails<T> = {
+    value: T;
+    levelOfControl:
+      | "not_controllable"
+      | "controlled_by_other_extensions"
+      | "controllable_by_this_extension"
+      | "controlled_by_this_extension";
+  }
+
+  interface BrowserSetting<T> {
+    get(details: {}): Promise<BrowserSettingDetails<T>>;
+    set(details: { value: T }): Promise<boolean>;
+    clear(details: {}): Promise<boolean>;
+    
+    onChange: Listener<BrowserSettingDetails<T>>;
+  }
 }
 
 declare namespace browser.webNavigation {
@@ -1881,6 +2416,7 @@ declare namespace browser.webRequest {
     | "xml_dtd"
     | "font"
     | "media"
+    | "object_subrequest"
     | "websocket"
     | "csp_report"
     | "imageset"
@@ -1927,7 +2463,64 @@ declare namespace browser.webRequest {
     requestHeaders?: HttpHeaders;
     responseHeaders?: HttpHeaders;
     authCredentials?: { username: string; password: string };
+    upgradeToSecure?: boolean;
   };
+
+  interface CertificateInfo {
+    fingerprint: {
+      sha1?: string;
+      sha256: string;
+    };
+    isBuiltInRoot: boolean;
+    issuer: string;
+    rawDER?: number[];
+    serialNumber: string;
+    subject: string;
+    subjectPublicKeyInfoDigest: {
+      sha256: string;
+    };
+    validity: {
+      start: number;
+      end: number;
+    }
+  }
+
+  type SecurityInfoTransparencyStatus =
+    | "not_applicable"
+    | "policy_compliant"
+    | "policy_not_enough_scts"
+    | "policy_not_diverse_scts";
+
+  type SecurityInfoProtocolVersion =
+    | "TLSv1"
+    | "TLSv1.1"
+    | "TLSv1.2"
+    | "TLSv1.3"
+    | "unknown";
+
+  type SecurityInfoState =
+    | "broken"
+    | "insecure"
+    | "secure"
+    | "weak";
+
+  interface SecurityInfo {
+    certificates: CertificateInfo[];
+    certificateTransparencyStatus?: SecurityInfoTransparencyStatus;
+    cipherSuite?: string;
+    errorMessage?: string;
+    hpkp?: boolean;
+    hsts?: boolean;
+    isDomainMismatch?: boolean;
+    isExtendedValidation?: boolean;
+    isNotValidAtThisTime?: boolean;
+    isUntrusted?: boolean;
+    keaGroupName?: string;
+    protocolVersion?: SecurityInfoProtocolVersion;
+    signatureSchemeName?: string;
+    state: SecurityInfoState;
+    weaknessReasons?: string;
+  }
 
   type UploadData = {
     bytes?: ArrayBuffer;
@@ -1972,11 +2565,21 @@ declare namespace browser.webRequest {
 
   const onBeforeSendHeaders: ReqListener<
     {
+      documentUrl?: string;
       requestId: string;
       url: string;
       method: string;
       frameId: number;
       parentFrameId: number;
+      proxyInfo?: {
+        host?: string;
+        port?: number;
+        type: "http" | "https" | "socks" | "socks5" | "direct" | "unknown";
+        username?: string;
+        password?: string;
+        proxyDNS?: boolean;
+        failoverTimeout?: number;
+      };
       tabId: number;
       type: ResourceType;
       timeStamp: number;
@@ -2121,6 +2724,10 @@ declare namespace browser.webRequest {
   >;
 
   function filterResponseData(requestId: string): StreamFilter;
+  function getSecurityInfo(requestId: string, options?: {
+    certificateChain?: boolean;
+    rawDER?: boolean;
+  }): Promise<SecurityInfo>;
 }
 
 declare namespace browser.windows {
@@ -2141,6 +2748,7 @@ declare namespace browser.windows {
     width?: number;
     height?: number;
     tabs?: browser.tabs.Tab[];
+    title?: string;
     incognito: boolean;
     type?: WindowType;
     state?: WindowState;
@@ -2203,6 +2811,7 @@ declare namespace browser.windows {
       focused?: boolean;
       drawAttention?: boolean;
       state?: WindowState;
+      titlePreface?: string;
     }
   ): Promise<browser.windows.Window>;
 
@@ -2213,59 +2822,4 @@ declare namespace browser.windows {
   const onRemoved: Listener<number>;
 
   const onFocusChanged: Listener<number>;
-}
-
-declare namespace browser.theme {
-  type Theme = {
-    images: ThemeImages;
-    colors: ThemeColors;
-    properties?: ThemeProperties;
-  };
-
-  type ThemeImages = {
-    headerURL: string;
-    theme_frame?: string;
-    additional_backgrounds?: string[];
-  };
-
-  type ThemeColors = {
-    accentcolor: string;
-    textcolor: string;
-    frame?: [number, number, number];
-    tab_text?: [number, number, number];
-    toolbar?: string;
-    toolbar_text?: string;
-    toolbar_field?: string;
-    toolbar_field_text?: string;
-  };
-
-  type ThemeProperties = {
-    additional_backgrounds_alignment: Alignment[];
-    additional_backgrounds_tiling: Tiling[];
-  };
-
-  type Alignment =
-    | "bottom"
-    | "center"
-    | "left"
-    | "right"
-    | "top"
-    | "center bottom"
-    | "center center"
-    | "center top"
-    | "left bottom"
-    | "left center"
-    | "left top"
-    | "right bottom"
-    | "right center"
-    | "right top";
-
-  type Tiling = "no-repeat" | "repeat" | "repeat-x" | "repeat-y";
-
-  function getCurrent(): Promise<Theme>;
-  function getCurrent(windowId: number): Promise<Theme>;
-  function update(theme: Theme): Promise<void>;
-  function update(windowId: number, theme: Theme): Promise<void>;
-  function reset(): Promise<void>;
-  function reset(windowId: number): Promise<void>;
 }
