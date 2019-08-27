@@ -904,8 +904,8 @@ declare namespace browser.management {
 
 declare namespace browser.notifications {
   type TemplateType = "basic" | "image" | "list" | "progress";
-
-  type NotificationOptionsBase = {
+  
+  type _OptionsBase = {
     message: string;
     title: string;
     iconUrl?: string;
@@ -915,39 +915,39 @@ declare namespace browser.notifications {
     buttons?: Array<{ title: string, iconUrl?: string }>;
   };
   
-  type NotificationOptionsImage = {
+  type _OptionsImage = {
     imageUrl: string;
   };
   
-  type NotificationOptionsList = {
+  type _OptionsList = {
     items: Array<{ title: string, message: string }>;
   };
   
-  type NotificationOptionsProgress = {
+  type _OptionsProgress = {
     progress: number;
   };
   
-  type NotificationOptionsCreate =
-    | ({ type: "basic" } & NotificationOptionsBase)
-    | ({ type: "image" } & NotificationOptionsBase & NotificationOptionsImage)
-    | ({ type: "list" } & NotificationOptionsBase & NotificationOptionsList)
-    | ({ type: "progress" } & NotificationOptionsBase & NotificationOptionsProgress);
+  type _OptionsCreate =
+    | ({ type: "basic" } & _OptionsBase)
+    | ({ type: "image" } & _OptionsBase & _OptionsImage)
+    | ({ type: "list" } & _OptionsBase & _OptionsList)
+    | ({ type: "progress" } & _OptionsBase & _OptionsProgress);
 
-  type NotificationOptionsUpdate =
-    | ({ type: "basic" } & NotificationOptionsBase)
-    | ({ type: "image" } & NotificationOptionsBase & Partial<NotificationOptionsImage>)
-    | ({ type: "list" } & NotificationOptionsBase & Partial<NotificationOptionsList>)
-    | ({ type: "progress" } & NotificationOptionsBase & Partial<NotificationOptionsProgress>);
+  type NotificationOptions =
+    | ({ type: "basic" } & _OptionsBase)
+    | ({ type: "image" } & _OptionsBase & Partial<_OptionsImage>)
+    | ({ type: "list" } & _OptionsBase & Partial<_OptionsList>)
+    | ({ type: "progress" } & _OptionsBase & Partial<_OptionsProgress>);
   
   function create(
     id: string | null,
-    options: NotificationOptionsCreate
+    options: _OptionsCreate
   ): Promise<string>;
-  function create(options: NotificationOptionsCreate): Promise<string>;
+  function create(options: _OptionsCreate): Promise<string>;
   
   function update(
     id: string,
-    options: NotificationOptionsUpdate
+    options: NotificationOptions
   ): Promise<string>;
 
   function clear(id: string): Promise<boolean>;
