@@ -903,20 +903,52 @@ declare namespace browser.management {
 }
 
 declare namespace browser.notifications {
-  type TemplateType = "basic" /* | "image" | "list" | "progress" */;
+  type TemplateType = "basic" | "image" | "list" | "progress";
 
-  type NotificationOptions = {
-    type: TemplateType;
+  type NotificationOptionsBase = {
     message: string;
     title: string;
     iconUrl?: string;
+    contextMessage?: string;
+    priority?: number;
+    eventTime?: number;
+    buttons?: Array<{ title: string, iconUrl?: string }>;
   };
+  
+  type NotificationOptionsImage = {
+    imageUrl: string;
+  };
+  
+  type NotificationOptionsList = {
+    items: Array<{ title: string, message: string }>;
+  };
+  
+  type NotificationOptionsProgress = {
+    progress: number;
+  };
+  
+  type NotificationOptionsCreate =
+    | ({ type: "basic" } & NotificationOptionsBase)
+    | ({ type: "image" } & NotificationOptionsBase & NotificationOptionsImage)
+    | ({ type: "list" } & NotificationOptionsBase & NotificationOptionsList)
+    | ({ type: "progress" } & NotificationOptionsBase & NotificationOptionsProgress);
 
+  type NotificationOptionsUpdate =
+    | ({ type: "basic" } & NotificationOptionsBase)
+    | ({ type: "image" } & NotificationOptionsBase & Partial<NotificationOptionsImage>)
+    | ({ type: "list" } & NotificationOptionsBase & Partial<NotificationOptionsList>)
+    | ({ type: "progress" } & NotificationOptionsBase & Partial<NotificationOptionsProgress>);
+  
   function create(
     id: string | null,
-    options: NotificationOptions
+    options: NotificationOptionsCreate
   ): Promise<string>;
-  function create(options: NotificationOptions): Promise<string>;
+  function create(options: NotificationOptionsCreate): Promise<string>;
+  
+  function update(
+    id: string,
+    options: NotificationOptionsUpdate
+  ): Promise<string>;
 
   function clear(id: string): Promise<boolean>;
 
@@ -925,6 +957,10 @@ declare namespace browser.notifications {
   const onClosed: Listener<string>;
 
   const onClicked: Listener<string>;
+  
+  const onButtonClicked:
+    | EvListener<(notificationId: string, buttonIndex: number) => void>
+    | undefined;
 }
 
 declare namespace browser.omnibox {
