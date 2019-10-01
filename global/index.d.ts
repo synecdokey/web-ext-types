@@ -903,20 +903,52 @@ declare namespace browser.management {
 }
 
 declare namespace browser.notifications {
-  type TemplateType = "basic" /* | "image" | "list" | "progress" */;
-
-  type NotificationOptions = {
-    type: TemplateType;
+  type TemplateType = "basic" | "image" | "list" | "progress";
+  
+  type _OptionsBase = {
     message: string;
     title: string;
     iconUrl?: string;
+    contextMessage?: string;
+    priority?: number;
+    eventTime?: number;
+    buttons?: Array<{ title: string, iconUrl?: string }>;
   };
+  
+  type _OptionsImage = {
+    imageUrl: string;
+  };
+  
+  type _OptionsList = {
+    items: Array<{ title: string, message: string }>;
+  };
+  
+  type _OptionsProgress = {
+    progress: number;
+  };
+  
+  type _OptionsCreate =
+    | ({ type: "basic" } & _OptionsBase)
+    | ({ type: "image" } & _OptionsBase & _OptionsImage)
+    | ({ type: "list" } & _OptionsBase & _OptionsList)
+    | ({ type: "progress" } & _OptionsBase & _OptionsProgress);
 
+  type NotificationOptions =
+    | ({ type: "basic" } & _OptionsBase)
+    | ({ type: "image" } & _OptionsBase & Partial<_OptionsImage>)
+    | ({ type: "list" } & _OptionsBase & Partial<_OptionsList>)
+    | ({ type: "progress" } & _OptionsBase & Partial<_OptionsProgress>);
+  
   function create(
     id: string | null,
+    options: _OptionsCreate
+  ): Promise<string>;
+  function create(options: _OptionsCreate): Promise<string>;
+  
+  function update(
+    id: string,
     options: NotificationOptions
   ): Promise<string>;
-  function create(options: NotificationOptions): Promise<string>;
 
   function clear(id: string): Promise<boolean>;
 
@@ -925,6 +957,10 @@ declare namespace browser.notifications {
   const onClosed: Listener<string>;
 
   const onClicked: Listener<string>;
+  
+  const onButtonClicked:
+    | EvListener<(notificationId: string, buttonIndex: number) => void>
+    | undefined;
 }
 
 declare namespace browser.omnibox {
