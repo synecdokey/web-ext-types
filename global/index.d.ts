@@ -800,7 +800,7 @@ declare namespace browser.history {
   type VisitItem = {
     id: string;
     visitId: string;
-    VisitTime?: number;
+    visitTime?: number;
     refferingVisitId: string;
     transition: TransitionType;
   };
