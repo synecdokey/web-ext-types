@@ -1467,6 +1467,8 @@ declare namespace browser.sidebarAction {
 
   function close(): Promise<void>;
 
+  function toggle(): Promise<void>;
+
   function isOpen(details: { windowId?: number }): Promise<boolean>;
 }
 
