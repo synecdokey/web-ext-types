@@ -1466,6 +1466,10 @@ declare namespace browser.sidebarAction {
   function open(): Promise<void>;
 
   function close(): Promise<void>;
+
+  function toggle(): Promise<void>;
+
+  function isOpen(details: { windowId?: number }): Promise<boolean>;
 }
 
 declare namespace browser.storage {
